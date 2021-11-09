@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-rocket",
+  "version": "1.0.0",
+  "description": "채팅구현하는 웹사이트입니다.",
+  "main": "socketchat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.18.1",
+    "socket.io": "^4.3.1"
+  }
+}
