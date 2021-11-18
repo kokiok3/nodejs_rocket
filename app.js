@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
-const port =8020;
+const port = 8020;
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const multer = require('multer');
 const path = require('path');
 const mysql = require('mysql');
-let fs =require('fs');
-const { extname } = require('path/posix');
+let fs = require('fs');
+// const { extname } = require('path/posix');
 
 //ejs
 app.set('view engine', 'ejs');
@@ -21,14 +21,14 @@ app.use('/upload', express.static(__dirname + '/upload'));
 const conn = mysql.createConnection({
     user: 'root',
     password: 't5hgu2!!',
-    database: 'rocket_chat'
+    // database: 'rocket_chat'
 });
 
 //get and post
 http.listen(port, ()=>{
     conn.connect((err)=>{
         if(err) console.log(err);
-        else console.log('Hi I\'m in')
+        else console.log('Hi I\'m in');
     })
 });
 
@@ -53,34 +53,61 @@ let storage = multer.diskStorage({
 });
 let upload_multer = multer({storage:storage});
 
-app.post('/chatting', upload_multer.single('data'), (req,res)=>{
+app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
+    // console.log('요청바디: ', req);
+    // console.log('응답: ', res);
+    // console.log('바디: ', req.body);
+
     //rename_filename
-    console.log(upload_multer.single('data'));
-    fs.rename(req.file.path, 'upload/' +Date.now() + '_' + req.file.originalname, function(err){
+    fs_rename = 'upload/' +Date.now() + '_' + req.file.originalname
+    fs.rename(req.file.path, fs_rename, function(err){
         if(err)throw err;
-        console.log('file renamed!');
+        console.log('file renamed!: ' , fs_rename);
     });
+    res.send(fs_rename);
 });
 
+let fs_rename;
 let user_list = [];
+
+class User{
+    constructor(id){
+        this.id=id;
+        this.random_profile=Math.floor(Math.random()*20);
+    }
+    // random_profile(num){
+    //     this.random_profile=
+    // }
+}
 
 //socket.io
 io.on('connection', function(socket){
-    socket.emit('saveId', socket.id); 
-    user_list.push(socket.id);
+    // socket.id 저장
+    socket.emit('saveId', socket.id);
+    // User class 생성
+    let new_user = new User(socket.id);
+    user_list.push(new_user);
+    console.log('접속유저', user_list);
+    // user_list.push(socket.id);
     // console.log('유저추가리스트:' + user_list);
-    io.emit('enter', {socket_id: socket.id + '님 입장하셨습니다.', user_list: user_list});
+    io.emit('enter', {socket_id: socket.id , user_list: user_list});
     //io.emit서버에 연결되어있는 모든사람한테 연결
 
+    let whisper_to;
     socket.on('send', (msg)=>{
-        console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
-        io.emit('new_msg',{socket_id: socket.id, msg: msg});
+        // console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
+        io.emit('new_msg',{socket_id: socket.id, msg: msg, whisper: whisper_to});
+        whisper_to = '';
     });
 
+    socket.on('whisper', (whisper)=>{
+        console.log('whisper_op:', whisper);
+        whisper_to = whisper;
+    })
+
     socket.on('disconnect', function(){
-        // console.log('유저삭제리스트:' + user_list.filter(v => {return v !== socket.id;}));
-        user_list = user_list.filter(v => {return v !== socket.id;});
-        console.log('유저삭제리스트:' + user_list);
-        io.emit('exit', {socket_id: socket.id + '님 퇴장하셨습니다.', user_list: user_list});
+        user_list = user_list.filter(i => i.id !== socket.id);
+        console.log('남은 유저:', user_list);
+        io.emit('exit', {socket_id: socket.id, user_list: user_list});
     });
 });
