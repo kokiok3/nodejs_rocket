@@ -127,7 +127,7 @@ body {
 #chat_name > div {
   font-size: 38px;
 }
-.chatting {
+.chatting_1{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,6 +184,7 @@ body {
 .whisper_msg {
   color: blue;
 }
+.whisper_msg,
 .new_msg {
   display: flex;
   align-items: flex-start;
@@ -216,9 +217,11 @@ body {
   align-items: baseline;
 }
 .my_msg:hover,
+.whisper_msg:hover,
 .new_msg:hover {
   background-color: var(--color-light);
 }
+.whisper_msg .msg_txt,
 .new_msg .msg_txt {
   margin-right: 100px;
   text-align: left;
@@ -228,6 +231,7 @@ body {
   max-width: 100%;
   word-wrap: break-word;
 }
+.whisper_msg .msg_nameNtime,
 .new_msg .msg_nameNtime {
   display: flex;
   justify-content: flex-start;
@@ -252,14 +256,16 @@ body {
   padding: var(--padding-10);
   margin-bottom: var(--padding-10);
 }
-.chat_input {
+.chat_input_1,
+.chat_input_2{
   width: 100%;
   height: 80%;
   border: none;
   overflow-y: auto;
   resize: none; /*remove the resize handle on the bottom right*/
 }
-.chat_input:focus {
+.chat_input_1:focus,
+.chat_input_2:focus{
   outline: none;
 }
 .chat_btns {
@@ -360,9 +366,6 @@ body {
   border: 1px solid var(--color-border);
   min-width: 205px;
   height: 30px;
-}
-#dm:focus {
-  outline: none;
 }
 #thred {
   background-color: var(--color-light);
@@ -467,7 +470,10 @@ body {
   font-size: 20px;
   color: var(--color-deeper);
 }
-.thred_two > .mychat {
+.thred_two > .thred_two_header > button > *:hover{
+  color: black;
+}
+.thred_two > .chatting_2 {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -475,7 +481,7 @@ body {
   background-color: var(--color-white);
   border-top: 1px solid var(--color-border);
 }
-.thred_two > .mychat > .chat_back {
-  /* height: calc(100% - 47px); */
-  height: 100%;
+.thred_two > .chatting_2 > .chat_back {
+   height: calc(100% - 47px);
+  /*height: 100%;*/
 }

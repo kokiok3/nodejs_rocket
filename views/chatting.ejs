@@ -58,7 +58,7 @@
     <div id="chat_name">
         <div>메신저</div>
     </div>
-    <div class="chatting">
+    <div class="chatting_1">
         <div class="chat_back">
             <div class="chat_history"></div>
         </div>
@@ -68,7 +68,7 @@
             </select>
         </div>
         <div class="chat_editor">
-            <textarea name="chat_input" id="chat_input" class="chat_input" placeholder="메시지를 입력해주세요" autofocus></textarea>
+            <textarea name="chat_input" id="chat_input" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
             <div class="chat_btns">
                 <div class="chat_each_btn">
                     <form action="" method="post" id="form_data" enctype="multipart/form-data">
@@ -80,7 +80,7 @@
                 </div>
                 <!-- <select name="mySelect" id="mySelect">
                 </select> -->
-                <button type="button" class="send_btn" onclick="send1()">보내기</button>
+                <button type="button" class="send_btn" onclick="send(1)">보내기</button>
             </div>
         </div>
     </div>
@@ -99,19 +99,19 @@
                 </button>
                 <div class="thred_two_border"></div>
             </div>
-            <div class="mychat">
+            <div class="chatting_2">
                 <div class="chat_back">
                     <div class="chat_history"></div>
                 </div>
                 <div class="chat_editor">
-                    <textarea name="chat_input" class="chat_input" placeholder="메시지를 입력해주세요" autofocus></textarea>
+                    <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
                     <div class="chat_btns">
                         <div class="chat_each_btn">
                             <button type="button"><i class="far fa-image"></i></button>
                             <button type="button"><i class="far fa-smile"></i></button>
                             <button type="button"><i class="fas fa-at"></i></button>
                         </div>
-                        <button type="button" class="send_btn" onclick="send2()">보내기</button>
+                        <button type="button" class="send_btn" onclick="send(2)">보내기</button>
                     </div>
                 </div>
                 <div class="side_view"></div>
@@ -119,10 +119,11 @@
         </div>
     </div>
     <script>
+        //귓속말
         let caret_whisper;
         let show_whisper_target;
         let select_whisper_id;
-        $('.chatting .chat_input').on('keydown', show_whisper)
+        $('.chatting_1 .chat_input_1').on('keydown', show_whisper)
         function show_whisper(e){
             if($('#whisper')[0].length >= 2){
                 if(e.shiftKey){
@@ -229,27 +230,18 @@
             console.log('준비중 사이드뷰')
         }
 
-        //채팅입력시 '보내기1' css활성화
-        $('.chatting > .chat_editor > .chat_input').on('keyup',function(e){
+        //채팅입력시 '보내기' css활성화
+        $('.chat_input_1').on('keyup',function(e, mode){
             if(e.target.value.trim() == ''){
-                $('.chatting > .chat_editor > .chat_btns > .send_btn').removeClass('active_btn');
+                $(`.chatting_${mode} > .chat_editor > .chat_btns > .send_btn`).removeClass('active_btn');
             }else{
-                $('.chatting > .chat_editor > .chat_btns > .send_btn').addClass('active_btn');
-            }
-        });
-
-        //채팅입력시 '보내기2' css활성화
-        $('.thred_two > .mychat > .chat_editor > .chat_input').on('keyup',function(e){
-            if(e.target.value.trim() == ''){
-                $('.thred_two > .mychat > .chat_editor > .chat_btns > .send_btn').removeClass('active_btn');
-            }else{
-                $('.thred_two > .mychat > .chat_editor > .chat_btns > .send_btn').addClass('active_btn');
+                $(`.chatting_${mode} > .chat_editor > .chat_btns > .send_btn`).addClass('active_btn');
             }
         });
 
         //채팅창 ctrl+Enter && 보내기 기능
-        $('.chatting .chat_input').on('keydown', about_enter);
-        $('.mychat .chat_input').on('keydown', about_enter);
+        $('.chat_input_1').on('keydown', about_enter);
+        $('.chat_input_2').on('keydown', about_enter);
         function about_enter(e){
             if(e.ctrlKey){
                 switch(e.code){
@@ -268,94 +260,16 @@
                     // console.log($(this)[0].parentNode.childNodes[3].children[0].children[0].id)
                     e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
                     if($(this)[0].parentNode.previousElementSibling.classList[0] == 'chat_whisper'){
-                        send1(e);
+                        send(e, 1);
                     }else{
-                        send2(e);
+                        send(e, 2);
                     }
                 }
             }
         }
 
-        // function send(mode){
-        //     if($('.chatting .chat_input').val().trim() == ''){
-        //         alert('메세지입력해줘');
-        //         e.preventDefault();
-        //         return;
-        //     }else{
-        //         e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
-        //         const msg_wrapper = document.createElement('div');
-        //         const msg_profile_pic = document.createElement('div');
-        //         const msg_content = document.createElement('div');
-        //         const msg_nameNtime = document.createElement('div');
-        //         const msg_name = document.createElement('div');
-        //         const msg_time = document.createElement('div');
-        //         const msg_txt = document.createElement('div');
-        //         msg_wrapper.classList.add('my_msg');
-        //         msg_profile_pic.classList.add('msg_profile_pic');
-        //         msg_profile_pic.innerText = '프사';
-        //         msg_content.classList.add('msg_content');
-        //         msg_nameNtime.classList.add('msg_nameNtime');
-        //         msg_txt.classList.add('msg_txt');
-        //         msg_name.innerText = socketId;
-        //         msg_time.innerText = what_time;
-        //         msg_name.classList.add('msg_name');
-        //         msg_time.classList.add('msg_time');
-        //         msg_txt.innerText = $('.chatting .chat_input').val();
-        //         msg_nameNtime.append(msg_time);
-        //         msg_nameNtime.append(msg_name);
-        //         msg_content.append(msg_nameNtime, msg_txt);
-        //         msg_wrapper.append(msg_profile_pic, msg_content);
-        //         $('.chatting .chat_history').append(msg_wrapper);
-        //         if(mode == 2)
-        //         // socket.emit('send', $('.chatting .chat_input').val());
-        //         // op_value = $('this .whisper_op');
-        //         $('.chatting .chat_input' + mode).val('');
-        //         $('.chatting .chat_back').scrollTop($('.chatting .chat_history').height());
-        //         $('.chatting .chat_input').focus();
-        //     }
-        // }
-        //채팅 보내기2
-        function send2(e){
-            // console.log($(this));
-            if($('.mychat .chat_input').val().trim() == ''){
-                alert('메세지입력해줘');
-                e.preventDefault();
-                return;
-            }else{
-                const msg_wrapper = document.createElement('div');
-                const msg_profile_pic = document.createElement('div');
-                const msg_content = document.createElement('div');
-                const msg_nameNtime = document.createElement('div');
-                const msg_name = document.createElement('div');
-                const msg_time = document.createElement('div');
-                const msg_txt = document.createElement('div');
-                msg_wrapper.classList.add('my_msg');
-                msg_profile_pic.classList.add('msg_profile_pic');
-                msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
-                // msg_profile_pic.css({'background-image': `url(../${fs_rename})`});
-                msg_content.classList.add('msg_content');
-                msg_nameNtime.classList.add('msg_nameNtime');
-                msg_txt.classList.add('msg_txt');
-                msg_name.innerText = socketId;
-                msg_time.innerText = what_time;
-                msg_name.classList.add('msg_name');
-                msg_time.classList.add('msg_time');
-                msg_txt.innerText = $('.mychat .chat_input').val();
-                msg_nameNtime.append(msg_time);
-                msg_nameNtime.append(msg_name);
-                msg_content.append(msg_nameNtime, msg_txt);
-                msg_wrapper.append(msg_profile_pic, msg_content);
-                $('.mychat .chat_history').append(msg_wrapper);
-                $('.mychat .chat_input').val('');
-                $('.mychat .chat_back').scrollTop($('.mychat .chat_history').height());
-                $('.mychat .chat_input').focus();
-            }
-        }
-
-        //채팅 보내기1
-        // let op_value;
-        function send1(e){
-            if($('.chatting .chat_input').val().trim() == ''){
+        function send(e, mode){
+            if($(`.chat_input_${mode}`).val().trim() == ''){
                 alert('메세지입력해줘');
                 e.preventDefault();
                 return;
@@ -369,11 +283,11 @@
                 const msg_time = document.createElement('div');
                 const msg_txt = document.createElement('div');
                 msg_wrapper.classList.add('my_msg');
-                console.log(select_whisper_id);
-                console.log(select_whisper_id != undefined)
+                // console.log(select_whisper_id);
+                // console.log(select_whisper_id != undefined)
                 if(select_whisper_id != undefined){
                     msg_wrapper.classList.add('my_whisper');
-                    select_whisper_id = '';
+                    select_whisper_id = undefined;
                 }
                 msg_profile_pic.classList.add('msg_profile_pic');
                 msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
@@ -385,17 +299,16 @@
                 msg_time.innerText = what_time;
                 msg_name.classList.add('msg_name');
                 msg_time.classList.add('msg_time');
-                msg_txt.innerText = $('.chatting .chat_input').val();
+                msg_txt.innerText = $(`.chat_input_${mode}`).val();
                 msg_nameNtime.append(msg_time);
                 msg_nameNtime.append(msg_name);
                 msg_content.append(msg_nameNtime, msg_txt);
                 msg_wrapper.append(msg_profile_pic, msg_content);
-                $('.chatting .chat_history').append(msg_wrapper);
-                socket.emit('send', $('.chatting .chat_input').val());
-                // op_value = $('this .whisper_op');
-                $('.chatting .chat_input').val('');
-                $('.chatting .chat_back').scrollTop($('.chatting .chat_history').height());
-                $('.chatting .chat_input').focus();
+                $(`.chatting_${mode} .chat_history`).append(msg_wrapper);
+                socket.emit('send', $(`.chat_input_${mode}`).val());
+                $(`.chat_input_${mode}`).val('');
+                $(`.chatting_${mode} .chat_back`).scrollTop($(`.chatting_${mode} .chat_history`).height());
+                $(`.chat_input_${mode}`).focus();
             }
         }
 
@@ -463,19 +376,17 @@
                     msg_name.innerText = data.socket_id
                     msg_time.innerText = what_time;
                     msg_name.classList.add('msg_name');
+                    msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
                     msg_txt.innerText = data.msg;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
-                    $('.chatting .chat_history').append(msg_wrapper);
-                    $('.chatting .chat_back').scrollTop($('.chat_history').height());
+                    $('.chatting_1 .chat_history').append(msg_wrapper);
+                    $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
                 }
             }else{
                 if(data.socket_id != socketId){
-                    // if(op_value == socketId){
-                    //     console.log('귓속말 받음')
-                    // }
                     const msg_wrapper = document.createElement('div');
                     const msg_profile_pic = document.createElement('div');
                     const msg_content = document.createElement('div');
@@ -502,8 +413,8 @@
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
-                    $('.chatting .chat_history').append(msg_wrapper);
-                    $('.chatting .chat_back').scrollTop($('.chat_history').height());
+                    $('.chatting_1 .chat_history').append(msg_wrapper);
+                    $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
                 }
             }
         })
@@ -519,11 +430,11 @@
 
             //오늘날짜가 메세지창에 떠있지않으면 오늘날짜 추가
             if($(".sys_date").text != today){
-                $('.chat_history').append(`<p class='sys_date'>${today}</p>`);
+                $('.chatting_1 .chat_history').append(`<p class='sys_date'>${today}</p>`);
             }
 
-            $('.chatting .chat_history').append(`<p class='sys'> ${data.socket_id} 님 입장하셨습니다. </p>`);
-            $('.chatting .chat_back').scrollTop($('.chat_history').height());
+            $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 입장하셨습니다. </p>`);
+            $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
 
             //입장시 참여자 목록과 인원 && 귓속말
             $('.participants').empty();
@@ -544,11 +455,11 @@
             //오늘날짜가 메세지창에 떠있지않으면 오늘날짜 추가
             // console.log('퇴장날짜',$(".sys_date").text != today);
             if($(".sys_date").text != today){
-                $('.chat_history').append(`<p class='sys_date'>${today}</p>`);
+                $('.chatting_1  .chat_history').append(`<p class='sys_date'>${today}</p>`);
             }
 
-            $('.chat_history').append(`<p class='sys'> ${data.socket_id} 님 퇴장하셨습니다. </p>`);
-            $('.chat_back').scrollTop($('.chat_history').height());
+            $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 퇴장하셨습니다. </p>`);
+            $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
 
             //퇴장시 참여자 목록과 인원 && 귓속말
             $('.participants').empty();
