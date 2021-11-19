@@ -119,39 +119,6 @@
         </div>
     </div>
     <script>
-        //귓속말
-        let caret_whisper;
-        let show_whisper_target;
-        let select_whisper_id;
-        $('.chatting_1 .chat_input_1').on('keydown', show_whisper)
-        function show_whisper(e){
-            if($('#whisper')[0].length >= 2){
-                if(e.shiftKey){
-                    switch(e.code){
-                        case 'Digit2':
-                            console.log(e);
-                            $('.chat_whisper').removeClass('d-none');
-                            $('#whisper').on('change', select_whisper);
-                            break;
-                    }
-                }
-                caret_whisper = e.target.selectionStart;
-                show_whisper_target = e.target;
-            }
-        }
-        function select_whisper(e){
-            const span = document.createElement('span');
-            $('.chat_whisper').addClass('d-none');
-            // console.log(caret_whisper);
-            // console.log(show_whisper_target);
-            show_whisper_target.setRangeText(e.target.value + ' ', caret_whisper+1, caret_whisper+1, "end");
-            show_whisper_target.focus();
-            caret_whisper = '';
-            show_whisper_target = '';
-            select_whisper_id = e.target.value;
-            socket.emit('whisper', e.target.value);
-        }
-
         //이미지전송
         $('.btn_send_img').click(function(){$('input[name=btn_send_img]').trigger('click');});
         function btn_send_img(){
@@ -230,14 +197,52 @@
             console.log('준비중 사이드뷰')
         }
 
-        //채팅입력시 '보내기' css활성화
-        $('.chat_input_1').on('keyup',function(e, mode){
-            if(e.target.value.trim() == ''){
-                $(`.chatting_${mode} > .chat_editor > .chat_btns > .send_btn`).removeClass('active_btn');
-            }else{
-                $(`.chatting_${mode} > .chat_editor > .chat_btns > .send_btn`).addClass('active_btn');
+        //귓속말
+        let caret_whisper;
+        let show_whisper_target;
+        let select_whisper_id;
+        $('.chatting_1 .chat_input_1').on('keydown', show_whisper)
+        function show_whisper(e){
+            if($('#whisper')[0].length >= 2){
+                if(e.shiftKey){
+                    switch(e.code){
+                        case 'Digit2':
+                            $('.chat_whisper').removeClass('d-none');
+                            $('#whisper').on('change', select_whisper);
+                            break;
+                    }
+                }
+                caret_whisper = e.target.selectionStart;
+                show_whisper_target = e.target;
             }
-        });
+            if(e.code == 'Backspace'){
+                $('.chat_whisper').addClass('d-none');
+            }
+        }
+        function select_whisper(e){
+            const span = document.createElement('span');
+            $('.chat_whisper').addClass('d-none');
+            // console.log(caret_whisper);
+            // console.log(show_whisper_target);
+            show_whisper_target.setRangeText(e.target.value + ' ', caret_whisper+1, caret_whisper+1, "end");
+            show_whisper_target.focus();
+            caret_whisper = '';
+            show_whisper_target = '';
+            select_whisper_id = e.target.value;
+            socket.emit('whisper', e.target.value);
+        }
+
+        //채팅입력시 '보내기' css활성화
+        $('.chat_input_1').on('keyup', active_send_btn);
+        $('.chat_input_2').on('keyup', active_send_btn)
+        function active_send_btn(e){
+        let chat_input_mode = e.target.className.charAt(11);
+            if(e.target.value.trim() == ''){
+                $(`.chatting_${chat_input_mode} > .chat_editor > .chat_btns > .send_btn`).removeClass('active_btn');
+            }else{
+                $(`.chatting_${chat_input_mode} > .chat_editor > .chat_btns > .send_btn`).addClass('active_btn');
+            }
+        }
 
         //채팅창 ctrl+Enter && 보내기 기능
         $('.chat_input_1').on('keydown', about_enter);
@@ -268,6 +273,7 @@
             }
         }
 
+        //채팅 보내기
         function send(e, mode){
             if($(`.chat_input_${mode}`).val().trim() == ''){
                 alert('메세지입력해줘');
@@ -309,6 +315,9 @@
                 $(`.chat_input_${mode}`).val('');
                 $(`.chatting_${mode} .chat_back`).scrollTop($(`.chatting_${mode} .chat_history`).height());
                 $(`.chat_input_${mode}`).focus();
+                if($('#whisper').hasClass('d-none') == false){
+                    $('.chat_whisper').addClass('d-none');
+                }
             }
         }
 
