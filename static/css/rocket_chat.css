@@ -248,6 +248,22 @@ body {
   font-size: var(--font-10);
   color: var(--color-deeper);
 }
+.chat_whisper{
+  width: 100%;
+  padding: 0 10px;
+}
+.chat_whisper > #whisper{
+  width: 100%;
+  height: calc((22.6px * 2) + 40px);
+  background-color: var(--color-light);
+}
+.chat_whisper > #whisper >.whisper_op{
+  padding: var(--padding-10);
+}
+.chat_whisper > #whisper > .whisper_op:hover{
+  width: 100%;
+  background-color: var(--color-deeper);
+}
 .chat_editor {
   width: 96%;
   height: 150px;

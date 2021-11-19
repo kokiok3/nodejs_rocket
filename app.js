@@ -7,6 +7,7 @@ const multer = require('multer');
 const path = require('path');
 const mysql = require('mysql');
 let fs = require('fs');
+const Console = require("console");
 // const { extname } = require('path/posix');
 
 //ejs
@@ -96,8 +97,9 @@ io.on('connection', function(socket){
     let whisper_to;
     socket.on('send', (msg)=>{
         // console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
+        console.log('send!!!!:', msg);
         io.emit('new_msg',{socket_id: socket.id, msg: msg, whisper: whisper_to});
-        whisper_to = '';
+        whisper_to = undefined;
     });
 
     socket.on('whisper', (whisper)=>{
