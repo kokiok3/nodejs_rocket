@@ -63,8 +63,8 @@
             <div class="chat_history"></div>
         </div>
         <div class="chat_whisper d-none">
-            <select name="whisper" id="whisper">
-                <option class="whisper_always">귓속말</option>
+            <select name="whisper" id="whisper" size="2">
+<!--                <option selected>귓속말</option>-->
             </select>
         </div>
         <div class="chat_editor">
@@ -80,7 +80,7 @@
                 </div>
                 <!-- <select name="mySelect" id="mySelect">
                 </select> -->
-                <button type="button" class="send_btn" onclick="send(1)">보내기</button>
+                <button type="button" class="send_btn" onclick="send(event, mode=1)">보내기</button>
             </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
                             <button type="button"><i class="far fa-smile"></i></button>
                             <button type="button"><i class="fas fa-at"></i></button>
                         </div>
-                        <button type="button" class="send_btn" onclick="send(2)">보내기</button>
+                        <button type="button" class="send_btn" onclick="send(event, 2)">보내기</button>
                     </div>
                 </div>
                 <div class="side_view"></div>
@@ -201,7 +201,7 @@
         let caret_whisper;
         let show_whisper_target;
         let select_whisper_id;
-        $('.chatting_1 .chat_input_1').on('keydown', show_whisper)
+        $('.chat_input_1').on('keydown', show_whisper)
         function show_whisper(e){
             if($('#whisper')[0].length >= 2){
                 if(e.shiftKey){
@@ -209,27 +209,28 @@
                         case 'Digit2':
                             $('.chat_whisper').removeClass('d-none');
                             $('#whisper').on('change', select_whisper);
+                            caret_whisper = e.target.selectionStart;
+                            show_whisper_target = e.target;
                             break;
                     }
                 }
-                caret_whisper = e.target.selectionStart;
-                show_whisper_target = e.target;
             }
             if(e.code == 'Backspace'){
                 $('.chat_whisper').addClass('d-none');
             }
         }
         function select_whisper(e){
-            const span = document.createElement('span');
             $('.chat_whisper').addClass('d-none');
             // console.log(caret_whisper);
-            // console.log(show_whisper_target);
+            console.log(show_whisper_target);
             show_whisper_target.setRangeText(e.target.value + ' ', caret_whisper+1, caret_whisper+1, "end");
             show_whisper_target.focus();
             caret_whisper = '';
             show_whisper_target = '';
             select_whisper_id = e.target.value;
             socket.emit('whisper', e.target.value);
+            console.log($('#whisper')[0].selectedIndex);
+            $('#whisper')[0].selectedIndex = -1;
         }
 
         //채팅입력시 '보내기' css활성화
@@ -275,6 +276,8 @@
 
         //채팅 보내기
         function send(e, mode){
+            // console.log(e);
+            // console.log(mode);
             if($(`.chat_input_${mode}`).val().trim() == ''){
                 alert('메세지입력해줘');
                 e.preventDefault();
@@ -358,11 +361,13 @@
         })
 
         socket.on('new_msg', (data)=>{
-            // console.log(`메세지 보낸사람은 ${data.socket_id} 나의 아이디는 ${socketId}`)
+            console.log('new!!!: ', data.whisper);
+            console.log(`메세지 보낸사람은 ${data.socket_id} 나의 아이디는 ${socketId}`)
             // console.log(socketId);
             // console.log(data.whisper);
             // console.log(data.whisper == socketId);
             if(data.whisper != undefined){
+                console.log('귓속말임');
                 if(data.whisper == socketId){
                     const msg_wrapper = document.createElement('div');
                     const msg_profile_pic = document.createElement('div');
@@ -395,6 +400,7 @@
                     $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
                 }
             }else{
+                console.log('귓속말아님');
                 if(data.socket_id != socketId){
                     const msg_wrapper = document.createElement('div');
                     const msg_profile_pic = document.createElement('div');
