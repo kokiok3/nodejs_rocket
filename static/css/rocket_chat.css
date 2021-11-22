@@ -42,6 +42,10 @@ body {
   background-size: cover;
   background-position: center;
 }
+#setting_bar > .setting_mypic > img{
+  width: 30px;
+  height: 30px;
+}
 #setting_bar > .setting_custom {
   display: flex;
   align-items: center;
