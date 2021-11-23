@@ -41,6 +41,9 @@ body {
   background-color: #fff176;
   background-size: cover;
   background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 #setting_bar > .setting_mypic > img{
   width: 30px;
@@ -203,9 +206,16 @@ body {
   background-size: cover;
   background-position: center;
   background-color: red;
-  border-radius: 50%;
+  border-radius: 40%;
   border: none;
   outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.msg_profile_pic > img{
+  width: 30px;
+  height: 30px;
 }
 .msg_content {
   width: 90%;
