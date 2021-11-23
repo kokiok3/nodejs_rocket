@@ -37,7 +37,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="setting_change" class="btn" data-bs-dismiss="modal" onclick="change_profile()">저장</button >
+                    <button type="button" id="setting_change" class="btn" data-bs-dismiss="modal" onclick="change_profile()">저장</button>
                 </div>
             </div>
         </div>
@@ -282,7 +282,7 @@
         //채팅 보내기
         function send(e, mode){
             // console.log(e);
-            // console.log(mode);
+            console.log(mode);
             if($(`.chat_input_${mode}`).val().trim() == ''){
                 alert('메세지입력해줘');
                 e.preventDefault();
@@ -297,6 +297,7 @@
                 const msg_time = document.createElement('div');
                 const msg_txt = document.createElement('div');
                 msg_wrapper.classList.add('my_msg');
+                msg_wrapper.classList.add(userName);
                 // console.log(select_whisper_id);
                 // console.log(select_whisper_id != undefined)
                 if(select_whisper_id != undefined){
@@ -304,12 +305,24 @@
                     select_whisper_id = undefined;
                 }
                 msg_profile_pic.classList.add('msg_profile_pic');
-                msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
-                // msg_profile_pic.css({'background-image': `url(../${fs_rename})`});
+                //프로필 사진
+                if(random_profile_number != undefined){
+                    if(fs_rename != undefined){
+                        msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                    }
+                    msg_profile_pic.style.backgroundColor = random_profile_color;
+                    const msg_profile_pic_random_img = document.createElement('img');
+                    msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${random_profile_number}).png`);
+                    msg_profile_pic.append(msg_profile_pic_random_img);
+                }
                 msg_content.classList.add('msg_content');
                 msg_nameNtime.classList.add('msg_nameNtime');
                 msg_txt.classList.add('msg_txt');
+                if(userName != undefined){
+                    msg_name.innerText = userName;
+                }else{
                 msg_name.innerText = socketId;
+                }
                 msg_time.innerText = what_time;
                 msg_name.classList.add('msg_name');
                 msg_time.classList.add('msg_time');
@@ -319,7 +332,13 @@
                 msg_content.append(msg_nameNtime, msg_txt);
                 msg_wrapper.append(msg_profile_pic, msg_content);
                 $(`.chatting_${mode} .chat_history`).append(msg_wrapper);
-                socket.emit('send', $(`.chat_input_${mode}`).val());
+                socket.emit('send', {
+                    msg: $(`.chat_input_${mode}`).val(),
+                    user_name: userName,
+                    random_profile_number: random_profile_number,
+                    random_profile_color: random_profile_color
+                });
+                console.log($(`.chat_input_${mode}`).val());
                 $(`.chat_input_${mode}`).val('');
                 $(`.chatting_${mode} .chat_back`).scrollTop($(`.chatting_${mode} .chat_history`).height());
                 $(`.chat_input_${mode}`).focus();
@@ -338,32 +357,44 @@
             form_data.append('socket_id', socketId);
 
             console.log($('#form_data')[0]);
-            socket.emit('change_profile', {user_name: $('input[name=user_name]').val(), socket_id: socketId});
-            // $.ajax({
-            //     type: 'POST',
-            //     url: '/file_upload',
-            //     data: form_data,
-            //     enctype: 'multipart/form-data',
-            //     processData:false,
-            //     contentType:false,
-            //     success: function(data){
-            //         alert('성공: ' + data);
-            //         fs_rename = data;
-            //         $('.setting_mypic, .msg_profile_pic').css({'background-image': `url(../${fs_rename})`});
-            //
-            //     },
-            //     error: function(err){
-            //         alert('실패: ' + err.statusText);
-            //         console.log(err);
-            //     }
-            // });
+            // let before_user_name;
+            // if(userName =! undefined){
+            //     before_user_name = userName;
+            // }else{
+            //     before_user_name = socketId;
+            // }
+            socket.emit('change_profile', {
+                user_name: $('input[name=user_name]').val(),
+                socket_id: socketId,
+                before_user_name: before_user_name
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/file_upload',
+                data: form_data,
+                enctype: 'multipart/form-data',
+                processData:false,
+                contentType:false,
+                success: function(data){
+                    alert('성공: ' + data);
+                    fs_rename = data;
+                    $('.setting_mypic, .msg_profile_pic').css({'background-image': `url(../${fs_rename})`});
+
+                },
+                error: function(err){
+                    alert('실패: ' + err.statusText);
+                    console.log(err);
+                }
+            });
         }
 
         //소켓
         const socket = io.connect(); //서버와 소켓을 생성한다.
         let socketId;
+        let userName;
         let random_profile_number;
         let random_profile_color;
+        let before_user_name;
 
         socket.on('connect', function(data){
             // $('.chat_history').append("<p class='sys'>" + socket.id + " 입장 </p>");
@@ -374,9 +405,14 @@
             // console.log(`메세지 보낸사람은 ${data} 나의 아이디는 ${data}`);
             random_profile_number = data.new_user.random_profile_num;
             random_profile_color = data.random_color;
+            if(data.new_user.user_name == undefined){
+                userName = data.socket_id;
+            }else{
+                userName = data.new_user.user_name;
+            }
 
             //랜덤 프로필 사진
-            console.log(random_profile_number);
+            // console.log(random_profile_number);
             $('.setting_mypic').empty();
             $('.setting_mypic').append(`<img src="../static/image/image (${random_profile_number}).png">`);
 
@@ -414,7 +450,6 @@
                     }}
                 $('.participants_number').text(data.user_list.length + '명');
             }
-
         });
 
         socket.on('new_msg', (data)=>{
@@ -423,33 +458,44 @@
             // console.log(socketId);
             // console.log(data.whisper);
             // console.log(data.whisper == socketId);
+            const msg_wrapper = document.createElement('div');
+            const msg_profile_pic = document.createElement('div');
+            const msg_content = document.createElement('div');
+            const msg_nameNtime = document.createElement('div');
+            const msg_name = document.createElement('div');
+            const msg_time = document.createElement('div');
+            const msg_txt = document.createElement('div');
             if(data.whisper != undefined){
                 // console.log('귓속말임');
                 if(data.whisper == socketId){
-                    const msg_wrapper = document.createElement('div');
-                    const msg_profile_pic = document.createElement('div');
-                    const msg_content = document.createElement('div');
-                    const msg_nameNtime = document.createElement('div');
-                    const msg_name = document.createElement('div');
-                    const msg_time = document.createElement('div');
-                    const msg_txt = document.createElement('div');
                     msg_wrapper.classList.add('whisper_msg');
                     msg_profile_pic.classList.add('msg_profile_pic');
-                    if(fs_rename != undefined){
-                        msg_profile_pic.style.backgroundImage = `url()`;
-                    }else{
-                        msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                    //상대방 프로필 사진
+                    if(data.user_info.random_profile_number != undefined ){
+                        if(fs_rename != undefined){ //유저가 로컬파일 업로드했으면.
+                            msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                        }else{
+                            msg_profile_pic.style.backgroundColor = data.user_info.random_profile_color;
+                            const msg_profile_pic_random_img = document.createElement('img');
+                            msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.user_info.random_profile_number}).png`);
+                            msg_profile_pic.append(msg_profile_pic_random_img);
+                        }
                     }
-                    // msg_profile_pic.css({'background-image': `url(../${fs_rename})`});
                     msg_content.classList.add('msg_content');
                     msg_nameNtime.classList.add('msg_nameNtime');
                     msg_txt.classList.add('msg_txt');
-                    msg_name.innerText = data.socket_id
+                    //상대방 닉네임
+                    if(data.user_info.user_name != undefined){
+                        msg_name.innerText = data.user_info.user_name;
+                    }else{
+                        msg_name.innerText = data.socket_id;
+                    }
                     msg_time.innerText = what_time;
                     msg_name.classList.add('msg_name');
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    msg_txt.innerText = data.msg;
+                    console.log('newmsg:', data.user_info.msg);
+                    msg_txt.innerText = data.user_info.msg;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
@@ -459,29 +505,32 @@
             }else{
                 // console.log('귓속말아님');
                 if(data.socket_id != socketId){
-                    const msg_wrapper = document.createElement('div');
-                    const msg_profile_pic = document.createElement('div');
-                    const msg_content = document.createElement('div');
-                    const msg_nameNtime = document.createElement('div');
-                    const msg_name = document.createElement('div');
-                    const msg_time = document.createElement('div');
-                    const msg_txt = document.createElement('div');
                     msg_wrapper.classList.add('new_msg');
                     msg_profile_pic.classList.add('msg_profile_pic');
-                    if(fs_rename != undefined){
-                        msg_profile_pic.style.backgroundImage = `url()`;
-                    }else{
-                        msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                    //상대방 프로필 사진
+                    if(data.user_info.random_profile_number != undefined ){
+                        if(fs_rename != undefined){//유저가 로컬파일 업로드했으면.
+                            msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                        }else{
+                            msg_profile_pic.style.backgroundColor = data.user_info.random_profile_color;
+                            const msg_profile_pic_random_img = document.createElement('img');
+                            msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.user_info.random_profile_number}).png`);
+                            msg_profile_pic.append(msg_profile_pic_random_img);
+                        }
                     }
-                    // msg_profile_pic.css({'background-image': `url(../${fs_rename})`});
                     msg_content.classList.add('msg_content');
                     msg_nameNtime.classList.add('msg_nameNtime');
                     msg_txt.classList.add('msg_txt');
-                    msg_name.innerText = data.socket_id
+                    //상대방 닉네임
+                    if(data.user_info.user_name != undefined){
+                        msg_name.innerText = data.user_info.user_name;
+                    }else{
+                        msg_name.innerText = data.socket_id;
+                    }
                     msg_time.innerText = what_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    msg_txt.innerText = data.msg;
+                    msg_txt.innerText = data.user_info.msg;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
@@ -492,16 +541,19 @@
         });
 
         socket.on('change_profile', (data)=>{
+            console.log($(`.${data.before_user_name}`));
             // console.log('참여자 수:', $('.participants')[0].childElementCount);
-            console.log(data.profile.user_name);
-            console.log(data.before_user_name);
+            // console.log(data.profile.user_name);
+            // console.log(data.before_user_name);
+            userName = data.profile.user_name;
             for(let i=0; i<$('.participants')[0].childElementCount; i++){
                 // console.log($('.participants')[0].childNodes[i].innerText);
-                console.log('유저아이디: ', $('.participants')[0].childNodes[i].innerText == data.profile.socket_id);
-                console.log('유저네임: ', $('.participants')[0].childNodes[i].innerText == data.before_user_name);
+                // console.log('유저아이디: ', $('.participants')[0].childNodes[i].innerText == data.profile.socket_id);
+                // console.log('유저네임: ', $('.participants')[0].childNodes[i].innerText == data.before_user_name);
                 if($('.participants')[0].childNodes[i].innerText ==data.profile.socket_id
                     || $('.participants')[0].childNodes[i].innerText == data.before_user_name){
                     $('.participants')[0].childNodes[i].innerText = data.profile.user_name;
+                    $(`.${data.before_user_name} .msg_name`).innerText = data.profile.user_name;
                 }
             }
         });

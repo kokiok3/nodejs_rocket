@@ -112,23 +112,24 @@ io.on('connection', function(socket){
     io.emit('enter', {socket_id: socket.id , user_list: user_list});
     //(io.emit는 서버에 연결되어있는 모든사람한테 연결)
 
-    socket.on('change_profile', (profile)=>{
-        console.log(profile);
+    socket.on('change_profile', (data)=>{
+        console.log(data);
         let before_user_name;
         for(let key in user_list){
-            if(user_list[key].id == profile.socket_id){
+            if(user_list[key].id == data.socket_id){
                 before_user_name = user_list[key].user_name;
-                user_list[key].user_name = profile.user_name;
+                user_list[key].user_name = data.user_name;
+                break;
             }
         }
-        io.emit('change_profile', {profile: profile, before_user_name: before_user_name});
+        io.emit('change_profile', {profile: data, before_user_name: before_user_name});
     });
 
     let whisper_to;
-    socket.on('send', (msg)=>{
+    socket.on('send', (data)=>{
         // console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
         // console.log('send!!!!:', msg);
-        io.emit('new_msg',{socket_id: socket.id, msg: msg, whisper: whisper_to});
+        io.emit('new_msg',{socket_id: socket.id, user_info: data, whisper: whisper_to});
         whisper_to = undefined;
     });
 
