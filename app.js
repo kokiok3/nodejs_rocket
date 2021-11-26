@@ -57,25 +57,24 @@ let upload_multer = multer({storage: storage});
 app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
     // console.log('요청바디: ', req);
     // console.log('응답: ', res);
-    console.log('바디: ', req.body.user_name);
+    console.log('바디: ', req.body);
 
     //rename_filename
-    // fs_rename = 'upload/' +Date.now() + '_' + req.file.originalname
-    // fs.rename(req.file.path, fs_rename, function(err){
-    //     if(err)throw err;
-    //     console.log('file renamed!: ' , fs_rename);
-    // });
-    console.log(user_list);
+    fs_rename = 'upload/' +Date.now() + '_' + req.file.originalname
+    fs.rename(req.file.path, fs_rename, function(err){
+        if(err)throw err;
+        // console.log('file renamed!: ' , fs_rename);
+    });
     for(let key in user_list){
-        if(user_list[key].id == socketId){
-            // console.log(user_list[key].id == socketId);
-            // console.log(user_list[key].user_name);
-            user_list[key].user_name = req.body.user_name;
+        // console.log(user_list[key].id == req.body.socket_id);
+        if(user_list[key].id == req.body.socket_id){
+            user_list[key].profile_pic = fs_rename;
+            console.log('profile picture add:', user_list);
+            break;
         };
-        console.log('변동후:',user_list);
     }
-    // res.send(fs_rename);
-    res.send('success');
+    res.send(fs_rename);
+    // res.send('success');
 });
 
 let fs_rename;
@@ -85,36 +84,33 @@ class User{
     constructor(id){
         this.id=id;
         this.random_profile_num=Math.floor(Math.random()*20)+1;
-        // this.random_profile_color=random_color();
-        this.user_name;
+        this.user_name=id;
+        this.random_rgb =
+            'rgb('
+            + Math.round(Math.random()*255)
+            + ','
+            + Math.round(Math.random()*255)
+            + ','
+            + Math.round(Math.random()*255)
+            + ')';
         this.profile_pic;
-    }
-    random_color(){
-        const r = Math.round(Math.random()*255);
-        const g = Math.round(Math.random()*255);
-        const b = Math.round(Math.random()*255);
-        return `rgb(${r}, ${g}, ${b})`;
     }
 }
 
 //socket.io
-let socketId;
 io.on('connection', function(socket){
     // socket.id 저장
-    socketId = socket.id;
+    let socketId = socket.id;
     // User class 생성
     let new_user = new User(socket.id);
-    console.log('color: ',new_user.random_color());
-    const random_color = new_user.random_color();
     user_list.push(new_user);
-    console.log('나의 object는: ', new_user);
-    socket.emit('save_info', {socket_id: socket.id, new_user: new_user, random_color: random_color});
+    socket.emit('save_info', {socket_id: socket.id, new_user: new_user});
     io.emit('enter', {socket_id: socket.id , user_list: user_list});
     //(io.emit는 서버에 연결되어있는 모든사람한테 연결)
 
     socket.on('change_profile', (data)=>{
-        console.log(data);
         let before_user_name;
+        console.log('114:', data);
         for(let key in user_list){
             if(user_list[key].id == data.socket_id){
                 before_user_name = user_list[key].user_name;
@@ -122,6 +118,8 @@ io.on('connection', function(socket){
                 break;
             }
         }
+        console.log(2);
+        socket.emit('change_user_name', {profile: data});
         io.emit('change_profile', {profile: data, before_user_name: before_user_name});
     });
 
@@ -134,7 +132,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('whisper', (whisper)=>{
-        // console.log('whisper_op:', whisper);
+        console.log('whisper_op:', whisper);
         whisper_to = whisper;
     })
 
