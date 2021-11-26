@@ -13,6 +13,7 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     <link rel="icon" href="../static/favicon/rocket1.ico" type="image/x-icon" sizes="16x16">
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 </head>
 <body>
     <!-- Modal -->
@@ -36,8 +37,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="setting_change" class="btn" data-bs-dismiss="modal" onclick="change_profile()">저장</button>
+                    <button type="button" class="btn btn-secondary modal_close" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="setting_change" class="btn" data-bs-dismiss="modal" onclick="change_profile(event)">저장</button>
                 </div>
             </div>
         </div>
@@ -75,7 +76,7 @@
                 </select>
             </div>
             <div class="chat_editor">
-                <textarea name="chat_input" id="chat_input" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
+                <textarea name="chat_input" id="chat_input_1" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
                 <div class="chat_btns">
                     <div class="chat_each_btn">
                         <form action="" method="post" id="form_data" enctype="multipart/form-data">
@@ -83,7 +84,7 @@
                             <button type="button" class="btn_send_img"><i class="far fa-image"></i></button>
                         </form>
                         <button type="button" class="btn_emoji"><i class="far fa-smile"></i></button>
-                        <button type="button" class="btn_email"><i class="fas fa-at"></i></button>
+                        <button type="button" class="btn_whisper"><i class="fas fa-at"></i></button>
                     </div>
                     <!-- <select name="mySelect" id="mySelect">
                     </select> -->
@@ -151,42 +152,49 @@
         //     }
         // }
 
-        let new_date = new Date();
-        let now_year = new_date.getFullYear();
-        let now_month = new_date.getMonth()+1;
-        let now_date = new_date.getDate();
-        let now_hour = new_date.getHours();
-        let now_minutes = new_date.getMinutes();
-        let today = `${now_year}년 ${now_month}월 ${now_date}일`;
-        let what_time = `${now_hour}:${now_minutes}`;
+        //오늘날짜와 시간 변수
+        let new_date;
+        let now_year;
+        let now_month;
+        let now_date;
+        let now_hour;
+        let now_minutes;
+        let today_for_class;
+        let today;
+        let what_time;
 
-        window.onload = function(){
-            //날짜와 시간 생성
+        //오늘날짜 생성
+        window.onload= stamp_today();
+        function stamp_today(){
+            new_date = new Date();
+            now_year = new_date.getFullYear();
+            now_month = new_date.getMonth()+1;
+            now_date = new_date.getDate();
+            today_for_class = now_year +'_'+ now_month +'_'+ now_date;
             today = `${now_year}년 ${now_month}월 ${now_date}일`;
-            what_time = `${now_hour}:${now_minutes}`;
-            if(now_hour>=12){
+        }
+        //시간 생성
+        function stamp_time(){
+            new_date = new Date();
+            now_hour = new_date.getHours();
+            now_minutes = new_date.getMinutes();
+            if(now_hour>=12){ //오후
                 if((now_hour-12)>=10){
-                    now_hour = now_hour;
-                    what_time = `${now_hour}:${now_minutes}am`
+                    return what_time = `${now_hour-12}:${now_minutes}pm`;
                 }else{
-                    now_hour = '0'+now_hour-12;
-                    what_time = `${now_hour}:${now_minutes}pm`
+                    return what_time = `0${now_hour-12}:${now_minutes}pm`;
                 }
             }
-            else if(now_hour>=1){
+            else if(now_hour>=1){ //오전
                 if(now_hour>=10){
-                    now_hour = now_hour;
-                    what_time = `${now_hour}:${now_minutes}am`
+                    return what_time = `${now_hour}:${now_minutes}am`;
                 }else{
-                    now_hour = '0'+now_hour;
-                    what_time = `${now_hour}:${now_minutes}am`
+                    return what_time = `0${now_hour}:${now_minutes}am`;
                 }
             }
-            else{
-                now_hour = now_hour+12;
-                what_time = `${now_hour}:${now_minutes}am`
+            else{ //오전 12시
+                return what_time = `${now_hour+12}:${now_minutes}am`;
             }
-            // console.log(`${today} ${what_time}`);
         }
 
         //thred 뒤로가기
@@ -206,7 +214,16 @@
         let caret_whisper;
         let show_whisper_target;
         let select_whisper_id;
-        $('.chat_input_1').on('keydown', show_whisper)
+        $('.chat_input_1').on('keydown', show_whisper);
+        $('.btn_whisper').on('click', add_whisper_text);
+        function add_whisper_text(e){
+            console.log($('.chat_input_1')[0].selectionStart);
+            $('.chat_input_1').html('@');
+            $('.chat_whisper').removeClass('d-none');
+            caret_whisper = $('.chat_input_1')[0].selectionStart;
+            show_whisper_target = document.getElementById('chat_input_1');
+            $('#whisper').on('change', select_whisper);
+        }
         function show_whisper(e){
             if($('#whisper')[0].length >= 2){
                 if(e.shiftKey){
@@ -226,15 +243,15 @@
         }
         function select_whisper(e){
             $('.chat_whisper').addClass('d-none');
-            // console.log(caret_whisper);
             console.log(show_whisper_target);
+            console.log(caret_whisper);
             show_whisper_target.setRangeText(e.target.value + ' ', caret_whisper+1, caret_whisper+1, "end");
             show_whisper_target.focus();
             caret_whisper = '';
             show_whisper_target = '';
             select_whisper_id = e.target.value;
             socket.emit('whisper', e.target.value);
-            console.log($('#whisper')[0].selectedIndex);
+            // console.log($('#whisper')[0].selectedIndex);
             $('#whisper')[0].selectedIndex = -1;
         }
 
@@ -281,14 +298,13 @@
 
         //채팅 보내기
         function send(e, mode){
-            // console.log(e);
-            console.log(mode);
             if($(`.chat_input_${mode}`).val().trim() == ''){
                 alert('메세지입력해줘');
                 e.preventDefault();
                 return;
             }else{
                 e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
+                stamp_time();
                 const msg_wrapper = document.createElement('div');
                 const msg_profile_pic = document.createElement('div');
                 const msg_content = document.createElement('div');
@@ -297,19 +313,16 @@
                 const msg_time = document.createElement('div');
                 const msg_txt = document.createElement('div');
                 msg_wrapper.classList.add('my_msg');
-                msg_wrapper.classList.add(userName);
-                // console.log(select_whisper_id);
-                // console.log(select_whisper_id != undefined)
                 if(select_whisper_id != undefined){
+                    //css적용을 위한 class 추가
                     msg_wrapper.classList.add('my_whisper');
                     select_whisper_id = undefined;
                 }
                 msg_profile_pic.classList.add('msg_profile_pic');
                 //프로필 사진
-                if(random_profile_number != undefined){
-                    if(fs_rename != undefined){
-                        msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
-                    }
+                if(fs_rename != undefined){
+                    msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                }else{
                     msg_profile_pic.style.backgroundColor = random_profile_color;
                     const msg_profile_pic_random_img = document.createElement('img');
                     msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${random_profile_number}).png`);
@@ -318,15 +331,12 @@
                 msg_content.classList.add('msg_content');
                 msg_nameNtime.classList.add('msg_nameNtime');
                 msg_txt.classList.add('msg_txt');
-                if(userName != undefined){
-                    msg_name.innerText = userName;
-                }else{
-                msg_name.innerText = socketId;
-                }
+                msg_txt.innerText = $(`.chat_input_${mode}`).val();
+                msg_name.innerText = userName;
                 msg_time.innerText = what_time;
                 msg_name.classList.add('msg_name');
+                msg_name.classList.add(userName);
                 msg_time.classList.add('msg_time');
-                msg_txt.innerText = $(`.chat_input_${mode}`).val();
                 msg_nameNtime.append(msg_time);
                 msg_nameNtime.append(msg_name);
                 msg_content.append(msg_nameNtime, msg_txt);
@@ -336,9 +346,9 @@
                     msg: $(`.chat_input_${mode}`).val(),
                     user_name: userName,
                     random_profile_number: random_profile_number,
-                    random_profile_color: random_profile_color
+                    random_profile_color: random_profile_color,
+                    what_time: what_time
                 });
-                console.log($(`.chat_input_${mode}`).val());
                 $(`.chat_input_${mode}`).val('');
                 $(`.chatting_${mode} .chat_back`).scrollTop($(`.chatting_${mode} .chat_history`).height());
                 $(`.chat_input_${mode}`).focus();
@@ -349,52 +359,69 @@
         }
 
         //프로필 변경
-        let fs_rename; //프로필 사진 이름
-        // $('.setting_custom').click(function(){$('input[name=image_upload]').trigger('click');});
-        function change_profile(){
-            let form_data;
-            form_data = new FormData($('#form_data')[0]);
-            form_data.append('socket_id', socketId);
-
-            console.log($('#form_data')[0]);
-            // let before_user_name;
-            // if(userName =! undefined){
-            //     before_user_name = userName;
-            // }else{
-            //     before_user_name = socketId;
-            // }
-            socket.emit('change_profile', {
-                user_name: $('input[name=user_name]').val(),
-                socket_id: socketId,
-                before_user_name: before_user_name
-            });
-            $.ajax({
-                type: 'POST',
-                url: '/file_upload',
-                data: form_data,
-                enctype: 'multipart/form-data',
-                processData:false,
-                contentType:false,
-                success: function(data){
-                    alert('성공: ' + data);
-                    fs_rename = data;
-                    $('.setting_mypic, .msg_profile_pic').css({'background-image': `url(../${fs_rename})`});
-
-                },
-                error: function(err){
-                    alert('실패: ' + err.statusText);
-                    console.log(err);
+        $('input[name=user_name]').on('keydown', enter_profile);
+        function enter_profile(e){
+            if(e.which == 13){
+                if($(this).val().trim() == '') {
+                    console.log(e);
+                    // alert('닉네임을 입력해줘');
+                    e.preventDefault();
+                }else{
+                    // alert('닉네임 바꿀거야')
+                    e.preventDefault();
+                    change_profile();
+                    $('.modal_close').trigger('click');
                 }
-            });
+            }
         }
-
+        let fs_rename; //유저 업로드 프로필 사진명
+        //프로필 저장 버튼 누르면 실행
+        function change_profile(e){
+            // console.log(e);
+            if($('input[name=user_name]').val().trim() == ''){
+                alert('닉네임을 입력해줘');
+                e.preventDefault();
+            }else{
+                socket.emit('change_profile', {
+                    user_name: $('input[name=user_name]').val(),
+                    socket_id: socketId,
+                });
+            }
+            change_profile_pic();
+        }
+        //유저가 이미지 업로드시 실행
+        function change_profile_pic(){
+            if($('#image_upload').val() != ''){
+                let form_data;
+                form_data = new FormData($('#form_data')[0]);
+                form_data.append('socket_id', socketId);
+                $.ajax({
+                    type: 'POST',
+                    url: '/file_upload',
+                    data: form_data,
+                    enctype: 'multipart/form-data',
+                    processData:false,
+                    contentType:false,
+                    success: function(data){
+                        alert('성공: ');
+                        fs_rename = data;
+                        console.log(fs_rename);
+                        $('.setting_mypic, .msg_profile_pic').css({'background-image': `url(../${fs_rename})`});
+                        $('.setting_mypic img, .msg_profile_pic img').addClass('d-none');
+                    },
+                    error: function(err){
+                        alert('실패: ' + err.statusText);
+                        console.log(err);
+                    }
+                });
+            }
+        }
         //소켓
         const socket = io.connect(); //서버와 소켓을 생성한다.
         let socketId;
         let userName;
         let random_profile_number;
         let random_profile_color;
-        let before_user_name;
 
         socket.on('connect', function(data){
             // $('.chat_history').append("<p class='sys'>" + socket.id + " 입장 </p>");
@@ -404,12 +431,8 @@
             socketId = data.socket_id;
             // console.log(`메세지 보낸사람은 ${data} 나의 아이디는 ${data}`);
             random_profile_number = data.new_user.random_profile_num;
-            random_profile_color = data.random_color;
-            if(data.new_user.user_name == undefined){
-                userName = data.socket_id;
-            }else{
-                userName = data.new_user.user_name;
-            }
+            random_profile_color = data.new_user.random_rgb;
+            userName = data.new_user.user_name;
 
             //랜덤 프로필 사진
             // console.log(random_profile_number);
@@ -418,15 +441,18 @@
 
             //랜덤 프로필 색상
             $('.setting_mypic').css({'background-color': random_profile_color});
+
+            //프로필 닉네임 변경창
+            $('#user_name').val(userName);
         });
 
         socket.on('enter', (data)=>{
-            // console.log(today);
-            // console.log('입장날짜', $(".sys_date").text != today);
-
-            //하루에 한번 오늘날짜 추가
-            if($(".sys_date").text != today){
-                $('.chatting_1 .chat_history').append(`<p class='sys_date'>${today}</p>`);
+            // 오늘날짜 생성
+            console.log($(`.${today_for_class}`)[0]);
+            console.log(today_for_class);
+            if($(`.${today_for_class}`)[0] == undefined){
+                stamp_today();
+                $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
             }
 
             //입장 메세지
@@ -437,27 +463,21 @@
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
-                if(data.user_list[key].user_name == undefined){
-                    $('.participants').append(`<div class='participants_name'> ${data.user_list[key].id} </div>`);
-                }else{
-                    $('.participants').append(`<div class='participants_name'> ${data.user_list[key].user_name} </div>`);
+                $('.participants').append(`<div class='participants_name, ${data.user_list[key].user_name}'> ${data.user_list[key].user_name} </div>`);
+                if(socketId != data.user_list[key].id) {
+                    $('#whisper').append(`<option class='whisper_op ${data.user_list[key].user_name}' value="${data.user_list[key].user_name}"> ${data.user_list[key].user_name} </option>`);
                 }
-                if(socketId != data.user_list[key].id){
-                    if(data.user_list[key].user_name == undefined){
-                        $('#whisper').append(`<option class='whisper_op' value="${data.user_list[key].id}"> ${data.user_list[key].id} </option>`);
-                    }else{
-                        $('#whisper').append(`<option class='whisper_op' value="${data.user_list[key].user_name}"> ${data.user_list[key].user_name} </option>`);
-                    }}
                 $('.participants_number').text(data.user_list.length + '명');
             }
         });
 
         socket.on('new_msg', (data)=>{
-            // console.log('new!!!: ', data.whisper);
             // console.log(`메세지 보낸사람은 ${data.socket_id} 나의 아이디는 ${socketId}`)
-            // console.log(socketId);
-            // console.log(data.whisper);
-            // console.log(data.whisper == socketId);
+            // 오늘날짜 생성
+            if($(`.${today_for_class}`)[0] == undefined){
+                stamp_today();
+                $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
+            }
             const msg_wrapper = document.createElement('div');
             const msg_profile_pic = document.createElement('div');
             const msg_content = document.createElement('div');
@@ -465,36 +485,28 @@
             const msg_name = document.createElement('div');
             const msg_time = document.createElement('div');
             const msg_txt = document.createElement('div');
+            //귓속말일때
             if(data.whisper != undefined){
-                // console.log('귓속말임');
-                if(data.whisper == socketId){
+                if(data.whisper == userName){
                     msg_wrapper.classList.add('whisper_msg');
                     msg_profile_pic.classList.add('msg_profile_pic');
                     //상대방 프로필 사진
-                    if(data.user_info.random_profile_number != undefined ){
-                        if(fs_rename != undefined){ //유저가 로컬파일 업로드했으면.
-                            msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
-                        }else{
-                            msg_profile_pic.style.backgroundColor = data.user_info.random_profile_color;
-                            const msg_profile_pic_random_img = document.createElement('img');
-                            msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.user_info.random_profile_number}).png`);
-                            msg_profile_pic.append(msg_profile_pic_random_img);
-                        }
+                    if(fs_rename != undefined){ //유저가 로컬파일 업로드했으면.
+                        msg_profile_pic.style.backgroundImage = `url(../${fs_rename})`;
+                    }else{
+                        msg_profile_pic.style.backgroundColor = data.user_info.random_profile_color;
+                        const msg_profile_pic_random_img = document.createElement('img');
+                        msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.user_info.random_profile_number}).png`);
+                        msg_profile_pic.append(msg_profile_pic_random_img);
                     }
                     msg_content.classList.add('msg_content');
                     msg_nameNtime.classList.add('msg_nameNtime');
                     msg_txt.classList.add('msg_txt');
-                    //상대방 닉네임
-                    if(data.user_info.user_name != undefined){
-                        msg_name.innerText = data.user_info.user_name;
-                    }else{
-                        msg_name.innerText = data.socket_id;
-                    }
-                    msg_time.innerText = what_time;
+                    msg_name.innerText = data.user_info.user_name;
+                    msg_time.innerText = data.user_info.what_time;
                     msg_name.classList.add('msg_name');
-                    msg_name.classList.add('msg_name');
+                    msg_name.classList.add(data.user_info.user_name);
                     msg_time.classList.add('msg_time');
-                    console.log('newmsg:', data.user_info.msg);
                     msg_txt.innerText = data.user_info.msg;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
@@ -503,7 +515,7 @@
                     $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
                 }
             }else{
-                // console.log('귓속말아님');
+                //귓속말 아닐때
                 if(data.socket_id != socketId){
                     msg_wrapper.classList.add('new_msg');
                     msg_profile_pic.classList.add('msg_profile_pic');
@@ -521,14 +533,10 @@
                     msg_content.classList.add('msg_content');
                     msg_nameNtime.classList.add('msg_nameNtime');
                     msg_txt.classList.add('msg_txt');
-                    //상대방 닉네임
-                    if(data.user_info.user_name != undefined){
-                        msg_name.innerText = data.user_info.user_name;
-                    }else{
-                        msg_name.innerText = data.socket_id;
-                    }
-                    msg_time.innerText = what_time;
+                    msg_name.innerText = data.user_info.user_name;
+                    msg_time.innerText = data.user_info.what_time;
                     msg_name.classList.add('msg_name');
+                    msg_name.classList.add(data.user_info.user_name);
                     msg_time.classList.add('msg_time');
                     msg_txt.innerText = data.user_info.msg;
                     msg_nameNtime.append(msg_name, msg_time);
@@ -540,29 +548,28 @@
             }
         });
 
-        socket.on('change_profile', (data)=>{
-            console.log($(`.${data.before_user_name}`));
-            // console.log('참여자 수:', $('.participants')[0].childElementCount);
-            // console.log(data.profile.user_name);
-            // console.log(data.before_user_name);
+        //유저닉네임 변경: 본인적용
+        socket.on('change_user_name', (data)=>{
             userName = data.profile.user_name;
-            for(let i=0; i<$('.participants')[0].childElementCount; i++){
-                // console.log($('.participants')[0].childNodes[i].innerText);
-                // console.log('유저아이디: ', $('.participants')[0].childNodes[i].innerText == data.profile.socket_id);
-                // console.log('유저네임: ', $('.participants')[0].childNodes[i].innerText == data.before_user_name);
-                if($('.participants')[0].childNodes[i].innerText ==data.profile.socket_id
-                    || $('.participants')[0].childNodes[i].innerText == data.before_user_name){
-                    $('.participants')[0].childNodes[i].innerText = data.profile.user_name;
-                    $(`.${data.before_user_name} .msg_name`).innerText = data.profile.user_name;
-                }
+        });
+
+        //유저닉네임 변경: 모두적용
+        socket.on('change_profile', (data)=>{
+            console.log(data.before_user_name, data.profile.user_name);
+            // console.log($(`.${data.before_user_name}`));
+            if(data.before_user_name != data.profile.user_name){
+                $('#user_name').val(data.profile.user_name);
+                $(`.${data.before_user_name}`).text(data.profile.user_name);
+                $(`.${data.before_user_name}`).val(data.profile.user_name);
+                $(`.${data.before_user_name}`).switchClass(data.before_user_name, data.profile.user_name);
             }
         });
 
         socket.on('exit', (data)=>{
-            //오늘날짜가 메세지창에 떠있지않으면 오늘날짜 추가
-            // console.log('퇴장날짜',$(".sys_date").text != today);
-            if($(".sys_date").text != today){
-                $('.chatting_1  .chat_history').append(`<p class='sys_date'>${today}</p>`);
+            // 오늘날짜 생성
+            if($(`.${today_for_class}`)[0] == undefined){
+                stamp_today();
+                $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
             }
 
             $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 퇴장하셨습니다. </p>`);
