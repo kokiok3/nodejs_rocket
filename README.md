@@ -2,7 +2,7 @@
 I used HTML, CSS, JAVASCRIPT, NODEJS, EJS <br>
 
 <h3> Here's the website </h3>
- <a href= "" target= "_blank"> 
+ <a href= "http://54.180.89.147:8020/chatting" target= "_blank"> 
   Rocket Messenger </a>
 
 <h3> Rocket Messenger offers these </h3>
