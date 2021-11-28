@@ -57,7 +57,7 @@ let upload_multer = multer({storage: storage});
 app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
     // console.log('요청바디: ', req);
     // console.log('응답: ', res);
-    console.log('바디: ', req.body);
+    console.log('바디: ', req.file);
 
     //rename_filename
     fs_rename = 'upload/' +Date.now() + '_' + req.file.originalname
@@ -69,12 +69,12 @@ app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
         // console.log(user_list[key].id == req.body.socket_id);
         if(user_list[key].id == req.body.socket_id){
             user_list[key].profile_pic = fs_rename;
-            console.log('profile picture add:', user_list);
+            console.log('바꾸기후', fs_rename);
+            // console.log('profile picture add:', user_list);
             break;
         };
     }
     res.send(fs_rename);
-    // res.send('success');
 });
 
 let fs_rename;
@@ -82,9 +82,10 @@ let user_list = [];
 
 class User{
     constructor(id){
-        this.id=id;
+        this.id = id;
+        this.user_name = id;
+        this.profile_pic = id;
         this.random_profile_num=Math.floor(Math.random()*20)+1;
-        this.user_name=id;
         this.random_rgb =
             'rgb('
             + Math.round(Math.random()*255)
@@ -93,7 +94,6 @@ class User{
             + ','
             + Math.round(Math.random()*255)
             + ')';
-        this.profile_pic;
     }
 }
 
@@ -108,9 +108,11 @@ io.on('connection', function(socket){
     io.emit('enter', {socket_id: socket.id , user_list: user_list});
     //(io.emit는 서버에 연결되어있는 모든사람한테 연결)
 
-    socket.on('change_profile', (data)=>{
+
+
+
+    socket.on('change_user_name', (data)=>{
         let before_user_name;
-        console.log('114:', data);
         for(let key in user_list){
             if(user_list[key].id == data.socket_id){
                 before_user_name = user_list[key].user_name;
@@ -118,22 +120,38 @@ io.on('connection', function(socket){
                 break;
             }
         }
-        console.log(2);
         socket.emit('change_user_name', {profile: data});
-        io.emit('change_profile', {profile: data, before_user_name: before_user_name});
+            console.log(data);
+        io.emit('change_user_name_all', {
+            profile: data,
+            before_user_name: before_user_name,
+        });
     });
+
+    socket.on('change_profile_pic', (data)=>{
+        console.log('chage profile pic: ', data);
+        io.emit('change_profile_pic', {
+            profile: data,
+            profile_pic: fs_rename
+        });
+        fs_rename = undefined;
+    });
+
+
+
 
     let whisper_to;
     socket.on('send', (data)=>{
         // console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
         // console.log('send!!!!:', msg);
         io.emit('new_msg',{socket_id: socket.id, user_info: data, whisper: whisper_to});
+        console.log('userInfo: ', data);
         whisper_to = undefined;
     });
 
     socket.on('whisper', (whisper)=>{
         console.log('whisper_op:', whisper);
-        whisper_to = whisper;
+        whisper_to = whisper;// new_msg를 통해 전달되는 변수
     })
 
     socket.on('disconnect', function(){
