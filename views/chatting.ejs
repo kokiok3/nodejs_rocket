@@ -46,6 +46,7 @@
     <div id="setting_bar">
         <button type="button" class="setting_mypic"></button >
         <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
+        <button type="button" class="setting_hamburger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fas fa-bars"></i></button>
     </div>
     <div id="participants_bar">
         <!-- 참여자 -->
@@ -56,11 +57,10 @@
         </div>
         <div class="participants"></div>
         <!-- 참여채널 -->
-        <div class="participants_header">
-            <!-- <div class="participants_icon"><i class="fas fa-server"></i></i></div> -->
-            <div class="participants_icon"><i class="fas fa-comments"></i></div>
-            <div class="participants_txt">참여채널</div>
-        </div>
+<!--        <div class="participants_header">-->
+<!--            <div class="participants_icon"><i class="fas fa-comments"></i></div>-->
+<!--            <div class="participants_txt">참여채널</div>-->
+<!--        </div>-->
     </div>
     <div id="chat_bar">
         <div id="chat_name">
@@ -71,7 +71,7 @@
                 <div class="chat_history"></div>
             </div>
             <div class="chat_whisper d-none">
-                <select name="whisper" id="whisper" size="2">
+                <select name="whisper" id="whisper" size="2" onchange="select_whisper(event)">
     <!--                <option selected>귓속말</option>-->
                 </select>
             </div>
@@ -93,9 +93,20 @@
             </div>
         </div>
         <div id="thred">
-            <div class="thred_one">
-                <button type="button" class="btn_mychat" onclick="btn_mychat()">나만의 채팅</button>
-                <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰 사용</button>
+            <div class="thred_one m_hamburger">
+                <div class="m_hamburger_title">더 많은 기능</div>
+                <button type="button" class="btn_mychat" onclick="btn_mychat()">메모장</button>
+                <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰</button>
+                <div class="participants_header m_hamburger_participants">
+                    <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
+                    <div class="participants_txt">참여자</div>
+                    <div class="participants_number"></div>
+                </div>
+                <div class="participants m_hamburger_participants_list"></div>
+                <div class="m_hamburger_footer">
+                    <button><i class="fas fa-arrow-left" onclick="thred_choice()"></i></button>
+                    <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
+                </div>
             </div>
             <div class="thred_two d-none">
                 <div class="thred_two_header">
@@ -121,6 +132,53 @@
                     </div>
                 </div>
                     <div class="side_view"></div>
+            </div>
+        </div>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <div class="m_hamburger_title">더 많은 기능</div>
+                <button type="button"  data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="thred_one m_hamburger">
+                    <button type="button" class="btn_mychat" onclick="btn_mychat()">메모장</button>
+                    <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰</button>
+                    <div class="participants_header m_hamburger_participants">
+                        <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
+                        <div class="participants_txt">참여자</div>
+                        <div class="participants_number"></div>
+                    </div>
+<!--                    <div class="participants m_hamburger_participants_list"></div>-->
+                    <div class="m_hamburger_footer">
+                        <button><i class="fas fa-arrow-left" onclick="thred_choice()"></i></button>
+                        <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
+                    </div>
+                </div>
+                    <div class="thred_two d-none">
+                        <div class="thred_two_header">
+                            <button>
+                                <i class="fas fa-arrow-left" onclick="thred_choice()"></i>
+                            </button>
+                            <div class="thred_two_border"></div>
+                        </div>
+                        <div class="chatting_2">
+                            <div class="chat_back">
+                                <div class="chat_history"></div>
+                            </div>
+                            <div class="chat_editor">
+                                <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
+                                <div class="chat_btns">
+                                    <div class="chat_each_btn">
+                                        <button type="button"><i class="far fa-image"></i></button>
+                                        <button type="button"><i class="far fa-smile"></i></button>
+                                        <button type="button"><i class="fas fa-at"></i></button>
+                                    </div>
+                                    <button type="button" class="send_btn" onclick="send(event, 2)">보내기</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="side_view"></div>
+                    </div>
             </div>
         </div>
     </div>
@@ -211,31 +269,24 @@
         }
 
         //귓속말
-        let caret_whisper;
-        let show_whisper_target;
-        let select_whisper_id;
+        let chat_input_1 = document.getElementById('chat_input_1');
+        let caret_whisper; //현재 커서 위치
+        let select_whisper_id; //채팅 보낼때 css를 적용을 위한 변수
+
         $('.chat_input_1').on('keydown', show_whisper);
         $('.btn_whisper').on('click', click_whisper_btn);
         function click_whisper_btn(){
             $('.chat_whisper').removeClass('d-none');
             caret_whisper = $('.chat_input_1')[0].selectionStart;
-            console.log(caret_whisper);
-            show_whisper_target = document.getElementById('chat_input_1');
-            show_whisper_target.setRangeText('@', caret_whisper, caret_whisper+1, "end");
-            $('#whisper').on('change', select_whisper);
+            chat_input_1.setRangeText('@', caret_whisper, caret_whisper+1, "end");
         }
         function show_whisper(e){
             if($('#whisper')[0].length >= 2){
                 if(e.shiftKey){
                     switch(e.code){
                         case 'Digit2':
-                            console.log('쑈 위스퍼');
                             $('.chat_whisper').removeClass('d-none');
                             caret_whisper = $('.chat_input_1')[0].selectionStart;
-                            console.log(caret_whisper);
-                            // show_whisper_target = e.target;
-                            console.log(e.target);
-                            $('#whisper').on('change', select_whisper);
                             break;
                     }
                 }
@@ -245,16 +296,13 @@
             }
         }
         function select_whisper(e){
+            //e 는 change event
             const chat_input1 = document.getElementById('chat_input_1');
             $('.chat_whisper').addClass('d-none');
-            // console.log(e);//change event
-            console.log(e.target.value.length);
-            console.log(caret_whisper);
             chat_input1.setRangeText(e.target.value+' ', caret_whisper+1, caret_whisper+e.target.value.length, "end");
             chat_input1.focus();
             caret_whisper = '';
-            show_whisper_target = '';
-            select_whisper_id = e.target.value; //채팅 보낼때 css를 적용을 위한 변수
+            select_whisper_id = e.target.value;
             socket.emit('whisper', e.target.value);
             $('#whisper')[0].selectedIndex = -1; //selectIndex는 select태그에 자동 선택할 인덱스를 정하는 메서드
         }
@@ -386,13 +434,15 @@
         }
         //유저이름 유효성 확인
         function check_user_name(e){
+            // console.log($('input[name=user_name]').val().trim());
+            // console.log($(`.participants_name.${userName}`)[0].innerText.trim());
             if($('input[name=user_name]').val().trim() == ''){
-                alert('닉네임을 입력해줘');
+                console.log('닉네임을 입력해줘');
                 $('#user_name').val(userName);
                 e.preventDefault(); //form전송 방지
                 //닉네임이 기존과 같을 경우
-            }else if($('input[name=user_name]').val().trim() == $(`.participants_name.${userName}`).text().trim()){
-                alert('닉네임을 똑같애');
+            }else if($('input[name=user_name]').val().trim() == $(`.participants_name.${userName}`)[0].innerText.trim()){
+                console.log('닉네임을 똑같애');
                 e.preventDefault(); //form전송 방지
                 if($('#image_upload').val() != ''){
                     change_profile_pic(e);
@@ -400,7 +450,7 @@
                 $('.modal_close').trigger('click');
             }
             else{
-                alert('닉네임 바꿀거야')
+                console.log('닉네임 바꿀거야')
                 e.preventDefault(); //form전송 방지
                 $('.modal_close').trigger('click');
                 return 'go_next';
@@ -473,8 +523,8 @@
 
         socket.on('enter', (data)=>{
             // 오늘날짜 생성
-            console.log($(`.${today_for_class}`)[0]);
-            console.log(today_for_class);
+            // console.log($(`.${today_for_class}`)[0]);
+            // console.log(today_for_class);
             if($(`.${today_for_class}`)[0] == undefined){
                 stamp_today();
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
