@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>rocket messenger</title>
+    <title>Rocket Messenger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../static/css/rocket_chat.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -14,106 +17,62 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     <link rel="icon" href="../static/favicon/rocket1.ico" type="image/x-icon" sizes="16x16">
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <style>
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">프로필 변경</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="" method="post" id="form_data" enctype="multipart/form-data">
-                        <div class="image_upload">
-                            <label for="image_upload">프로필 사진</label><br>
-                            <input type="file" name='image_upload' id="image_upload">
-                        </div>
-                        <div class="user_name">
-                            <label for="user_name">유저 이름</label><br>
-                            <input type="text" name='user_name' id="user_name">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary modal_close" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="setting_change" class="btn" data-bs-dismiss="modal" onclick="change_profile(event)">저장</button>
-                </div>
-            </div>
-        </div>
+    <div class="content1">
+        <span class="content1_name">Rocket Messenger</span>
+        <span class="content1_dev">Developed by Jeong Sohyun</span>
     </div>
-    <div id="setting_bar">
-        <button type="button" class="setting_mypic"></button >
-        <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
-        <button type="button" class="setting_hamburger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fas fa-bars"></i></button>
-    </div>
-    <div id="participants_bar">
-        <!-- 참여자 -->
-        <div class="participants_header">
-            <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
-            <div class="participants_txt">참여자</div>
-            <div class="participants_number"></div>
-        </div>
-        <div class="participants"></div>
-        <!-- 참여채널 -->
-<!--        <div class="participants_header">-->
-<!--            <div class="participants_icon"><i class="fas fa-comments"></i></div>-->
-<!--            <div class="participants_txt">참여채널</div>-->
-<!--        </div>-->
-    </div>
-    <div id="chat_bar">
-        <div id="chat_name">
-            <div>메신저</div>
-        </div>
-        <div class="chatting_1">
-            <div class="chat_back">
-                <div class="chat_history"></div>
-            </div>
-            <div class="chat_whisper d-none">
-                <select name="whisper" id="whisper" size="2" onchange="select_whisper(event)">
-    <!--                <option selected>귓속말</option>-->
-                </select>
-            </div>
-            <div class="chat_editor">
-                <textarea name="chat_input" id="chat_input_1" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
-                <div class="chat_btns">
-                    <div class="chat_each_btn">
-                        <form action="" method="post" id="form_data" enctype="multipart/form-data">
-                            <input type="file" name='btn_send_img' id="btn_send_img" class="d-none">
-                            <button type="button" class="btn_send_img"><i class="far fa-image"></i></button>
-                        </form>
-                        <button type="button" class="btn_emoji"><i class="far fa-smile"></i></button>
-                        <button type="button" class="btn_whisper"><i class="fas fa-at"></i></button>
+    <div class="content2">
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">프로필 변경</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <!-- <select name="mySelect" id="mySelect">
-                    </select> -->
-                    <button type="button" class="send_btn" onclick="send(event, mode=1)">보내기</button>
+                    <div class="modal-body">
+                        <form action="" method="post" id="form_data" enctype="multipart/form-data">
+                            <div class="image_upload">
+                                <label for="image_upload">프로필 사진</label><br>
+                                <input type="file" name='image_upload' id="image_upload">
+                            </div>
+                            <div class="user_name">
+                                <label for="user_name">유저 이름</label><br>
+                                <input type="text" name='user_name' id="user_name">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary modal_close" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="setting_change" class="btn" data-bs-dismiss="modal" onclick="change_profile(event)">저장</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="thred">
-            <div class="thred_one m_hamburger">
-                <div class="m_hamburger_title">더 많은 기능</div>
-                <button type="button" class="btn_mychat" onclick="btn_mychat()">메모장</button>
-                <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰</button>
-                <div class="participants_header m_hamburger_participants">
-                    <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
-                    <div class="participants_txt">참여자</div>
-                    <div class="participants_number"></div>
-                </div>
-                <div class="participants m_hamburger_participants_list"></div>
-                <div class="m_hamburger_footer">
-                    <button><i class="fas fa-arrow-left" onclick="thred_choice()"></i></button>
-                    <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
-                </div>
+        <div id="setting_bar">
+            <button type="button" class="setting_mypic"></button >
+            <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
+            <div class="m_hamburger_setting_bar">
+                <button type="button" class="setting_mypic"></button >
+                <div class="chat_name">메신저</div>
             </div>
-            <div class="thred_two d-none">
-                <div class="thred_two_header">
+            <button type="button" class="setting_hamburger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fas fa-bars"></i></button>
+        </div>
+        <div id="second_bar">
+            <button type="button" class="btn_mychat" onclick="btn_mychat()">나와의 채팅</button>
+            <div class="my_chat d-none">
+                <div class="my_chat_header">
                     <button>
-                        <i class="fas fa-arrow-left" onclick="thred_choice()"></i>
+                        <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
                     </button>
-                    <div class="thred_two_border"></div>
+                    <div class="my_chat_border"></div>
                 </div>
                 <div class="chatting_2">
                     <div class="chat_back">
@@ -127,58 +86,97 @@
                                 <button type="button"><i class="far fa-smile"></i></button>
                                 <button type="button"><i class="fas fa-at"></i></button>
                             </div>
-                            <button type="button" class="send_btn" onclick="send(event, 2)">보내기</button>
+                            <button type="button" class="send_btn" onclick="send(event, 2)"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
-                    <div class="side_view"></div>
+            </div>
+            <!-- 참여자 -->
+            <div class="participants_bar">
+                <div class="participants_header">
+                    <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
+                    <div class="participants_txt">참여자</div>
+                    <div class="participants_number"></div>
+                </div>
+                <div class="participants"></div>
+                <!-- 참여채널 -->
+                <!--        <div class="participants_header">-->
+                <!--            <div class="participants_icon"><i class="fas fa-comments"></i></div>-->
+                <!--            <div class="participants_txt">참여채널</div>-->
+                <!--        </div>-->
             </div>
         </div>
+        <div id="chat_bar">
+            <div id="chat_name">
+                <span>마지막 대화 50분 전</span>
+            </div>
+            <div class="chatting_1">
+                <div class="chat_back">
+                    <div class="chat_history"></div>
+                </div>
+                <div class="chat_whisper d-none">
+                    <select name="whisper" id="whisper" size="2" onchange="select_whisper(event)">
+                        <!--                <option selected>귓속말</option>-->
+                    </select>
+                </div>
+                <div class="chat_editor">
+                    <button type="button" class="btn_whisper"><i class="fas fa-at"></i></button>
+                    <textarea name="chat_input" id="chat_input_1" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
+<!--                    <form action="" method="post" id="form_data" enctype="multipart/form-data">-->
+<!--                        <input type="file" name='btn_send_img' id="btn_send_img" class="d-none">-->
+<!--                        <button type="button" class="btn_send_img"><i class="far fa-image"></i></button>-->
+<!--                    </form>-->
+                    <button type="button" class="send_btn" onclick="send(event, mode=1)"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <!--반응형-->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
             <div class="offcanvas-header">
                 <div class="m_hamburger_title">더 많은 기능</div>
-                <button type="button"  data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-sign-out-alt"></i></button>
+                <!--                <button type="button"  data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-sign-out-alt"></i></button>-->
             </div>
             <div class="offcanvas-body">
-                <div class="thred_one m_hamburger">
+                <div class="m_hamburger_thred_one">
                     <button type="button" class="btn_mychat" onclick="btn_mychat()">메모장</button>
-                    <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰</button>
+<!--                    <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰</button>-->
                     <div class="participants_header m_hamburger_participants">
                         <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
                         <div class="participants_txt">참여자</div>
                         <div class="participants_number"></div>
                     </div>
-<!--                    <div class="participants m_hamburger_participants_list"></div>-->
+                    <div class="participants m_hamburger_participants_list"></div>
                     <div class="m_hamburger_footer">
-                        <button><i class="fas fa-arrow-left" onclick="thred_choice()"></i></button>
+                        <button type="button"  data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-sign-out-alt"></i></button>
+                        <!--                        <button><i class="fas fa-arrow-left" onclick="thred_choice()"></i></button>-->
                         <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
                     </div>
                 </div>
-                    <div class="thred_two d-none">
-                        <div class="thred_two_header">
-                            <button>
-                                <i class="fas fa-arrow-left" onclick="thred_choice()"></i>
-                            </button>
-                            <div class="thred_two_border"></div>
-                        </div>
-                        <div class="chatting_2">
-                            <div class="chat_back">
-                                <div class="chat_history"></div>
-                            </div>
-                            <div class="chat_editor">
-                                <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
-                                <div class="chat_btns">
-                                    <div class="chat_each_btn">
-                                        <button type="button"><i class="far fa-image"></i></button>
-                                        <button type="button"><i class="far fa-smile"></i></button>
-                                        <button type="button"><i class="fas fa-at"></i></button>
-                                    </div>
-                                    <button type="button" class="send_btn" onclick="send(event, 2)">보내기</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="side_view"></div>
+                <div class="my_chat d-none">
+                    <div class="my_chat_header">
+                        <button>
+                            <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
+                        </button>
+                        <div class="my_chat_border"></div>
                     </div>
+                    <div class="chatting_2">
+                        <div class="chat_back">
+                            <div class="chat_history"></div>
+                        </div>
+                        <div class="chat_editor">
+                            <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
+                            <div class="chat_btns">
+                                <div class="chat_each_btn">
+                                    <button type="button"><i class="far fa-image"></i></button>
+                                    <button type="button"><i class="far fa-smile"></i></button>
+                                    <button type="button"><i class="fas fa-at"></i></button>
+                                </div>
+                                <button type="button" class="send_btn" onclick="send(event, 2)"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="side_view"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -188,27 +186,6 @@
         function btn_send_img(){
 
         }
-
-        //이모티콘
-        // $('.btn_emoji').click(function(){$('select[name=mySelect]').trigger('click');});
-        // var mySelect = document.getElementById('mySelect')
-        // var newOption;
-        // var emojRange = [
-        // [128513, 128591], [9986, 10160], [128640, 128704]
-        // ];
-        // //inside emojRange 2d array , define range arrays (start number,end number).
-        // //1st array : Emoticons icons
-        // //2nd range : Dingbats.
-        // //3rd range : Transport and map symbols
-        // for (var i = 0; i < emojRange.length; i++) {
-        //     var range = emojRange[i];
-        //     for (var x = range[0]; x < range[1]; x++) {
-        //         newOption = document.createElement('option');
-        //         newOption.value = x;
-        //         newOption.innerHTML = "&#" + x + ";";
-        //         mySelect.appendChild(newOption);
-        //     }
-        // }
 
         //오늘날짜와 시간 변수
         let new_date;
@@ -256,13 +233,10 @@
         }
 
         //thred 뒤로가기
-        function thred_choice(){
-            $('.thred_two').addClass('d-none');
-            $('.thred_one').removeClass('d-none');
-        }
         function btn_mychat (){
-            $('.thred_two').removeClass('d-none');
-            $('.thred_one').addClass('d-none');
+            $('.my_chat').toggleClass('d-none');
+            $('.btn_mychat').toggleClass('d-none');
+
         }
         function btn_side_view(){
             console.log('준비중 사이드뷰')
@@ -276,9 +250,11 @@
         $('.chat_input_1').on('keydown', show_whisper);
         $('.btn_whisper').on('click', click_whisper_btn);
         function click_whisper_btn(){
-            $('.chat_whisper').removeClass('d-none');
-            caret_whisper = $('.chat_input_1')[0].selectionStart;
-            chat_input_1.setRangeText('@', caret_whisper, caret_whisper+1, "end");
+            if($('#whisper')[0].length >= 2){
+                $('.chat_whisper').removeClass('d-none');
+                caret_whisper = $('.chat_input_1')[0].selectionStart;
+                chat_input_1.setRangeText('@', caret_whisper, caret_whisper+1, "end");
+            }
         }
         function show_whisper(e){
             if($('#whisper')[0].length >= 2){
@@ -313,9 +289,9 @@
         function active_send_btn(e){
         let chat_input_mode = e.target.className.charAt(11);
             if(e.target.value.trim() == ''){
-                $(`.chatting_${chat_input_mode} > .chat_editor > .chat_btns > .send_btn`).removeClass('active_btn');
+                $(`.chatting_${chat_input_mode} .send_btn`).removeClass('active_btn');
             }else{
-                $(`.chatting_${chat_input_mode} > .chat_editor > .chat_btns > .send_btn`).addClass('active_btn');
+                $(`.chatting_${chat_input_mode} .send_btn`).addClass('active_btn');
             }
         }
 
@@ -323,13 +299,12 @@
         $('.chat_input_1').on('keydown', about_enter);
         $('.chat_input_2').on('keydown', about_enter);
         function about_enter(e){
-            if(e.ctrlKey){
-                switch(e.code){
-                    case 'Enter':
-                        let caret = e.target.selectionStart;
-                        e.target.setRangeText("\n", caret, caret, "end");
-                        break;
-                }
+            if(e.isComposing || e.keyCode === 229){
+                console.log(e.isComposing)
+                return;
+            }else if(e.ctrlKey && e.code=='Enter'){
+                let caret = e.target.selectionStart;
+                e.target.setRangeText("\n", caret, caret, "end");
             }else if(e.which === 13){
                 if($(this).val().trim() == ''){
                     alert('메세지입력해줘');
@@ -337,7 +312,6 @@
                     return;
                 }
                 else{
-                    // console.log($(this)[0].parentNode.childNodes[3].children[0].children[0].id)
                     e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
                     if($(this)[0].parentNode.previousElementSibling.classList[0] == 'chat_whisper'){
                         send(e, 1);
@@ -346,6 +320,14 @@
                     }
                 }
             }
+        }
+
+        //채팅에서 링크를 하이퍼링크로 만들기
+        const urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        function linkify(text) {
+            return text.replace(urlRegex, function(url) {
+                return '<a href="' + url + '" target="_blank">' + url + '</a>';
+            });
         }
 
         //채팅 보내기
@@ -357,13 +339,14 @@
             }else{
                 e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
                 stamp_time();
+                const msg_txt_text = linkify($(`.chat_input_${mode}`).val());
                 const msg_wrapper = document.createElement('div');
                 const msg_profile_pic = document.createElement('div');
                 const msg_content = document.createElement('div');
                 const msg_nameNtime = document.createElement('div');
-                const msg_name = document.createElement('div');
-                const msg_time = document.createElement('div');
-                const msg_txt = document.createElement('div');
+                const msg_name = document.createElement('span');
+                const msg_time = document.createElement('span');
+                const msg_txt = document.createElement('span');
                 msg_wrapper.classList.add('my_msg');
                 msg_wrapper.classList.add(userName);
                 //whisper 유무에 따른 css적용을 위한 class 추가
@@ -384,7 +367,7 @@
                 msg_content.classList.add('msg_content');
                 msg_nameNtime.classList.add('msg_nameNtime');
                 msg_txt.classList.add('msg_txt');
-                msg_txt.innerText = $(`.chat_input_${mode}`).val();
+                msg_txt.innerHTML = msg_txt_text;
                 msg_name.innerText = userName;
                 msg_time.innerText = what_time;
                 msg_name.classList.add('msg_name');
@@ -532,13 +515,19 @@
 
             //입장 메세지
             $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 입장하셨습니다. </p>`);
-            $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
+            $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
 
             //참여자 목록과 인원 && 귓속말 목록
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
-                $('.participants').append(`<div class='participants_name ${data.user_list[key].user_name}'> ${data.user_list[key].user_name} </div>`);
+                $('.participants').append(`<div class='participants_name ${data.user_list[key].user_name}'>
+                    <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
+                        <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
+                    </div>
+                    <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                    </div>`
+                );
                 if(socketId != data.user_list[key].id) {
                     $('#whisper').append(`<option class='whisper_op ${data.user_list[key].user_name}' value="${data.user_list[key].user_name}"> ${data.user_list[key].user_name} </option>`);
                 }
@@ -553,6 +542,7 @@
                 stamp_today();
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
             }
+            const msg_txt_text = linkify(data.user_info.msg);
             const msg_wrapper = document.createElement('div');
             const msg_profile_pic = document.createElement('div');
             const msg_content = document.createElement('div');
@@ -582,12 +572,12 @@
                     msg_time.innerText = data.user_info.what_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    msg_txt.innerText = data.user_info.msg;
+                    msg_txt.innerHTML = msg_txt_text;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
                     $('.chatting_1 .chat_history').append(msg_wrapper);
-                    $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
+                    $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
                 }
             }else{
                 //귓속말 아닐때
@@ -611,12 +601,12 @@
                     msg_time.innerText = data.user_info.what_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    msg_txt.innerText = data.user_info.msg;
+                    msg_txt.innerHTML = msg_txt_text;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
                     $('.chatting_1 .chat_history').append(msg_wrapper);
-                    $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
+                    $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
                 }
             }
         });
@@ -652,14 +642,20 @@
             }
 
             $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 퇴장하셨습니다. </p>`);
-            $('.chatting_1 .chat_back').scrollTop($('.chat_history').height());
+            $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
 
             //퇴장시 참여자 목록과 인원 && 귓속말
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
                 // console.log(data.user_list[key]);
-                $('.participants').append(`<div class='participants_name'> ${data.user_list[key].id} </div>`);
+                $('.participants').append(`<div class='participants_name ${data.user_list[key].user_name}'>
+                    <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
+                        <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
+                    </div>
+                    <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                    </div>`
+                );
                 $('.participants_number').text(data.user_list.length + '명');
                 if(socketId != data.user_list[key].id){
                     $('#whisper').append(`<option class='whisper_op' value="${data.user_list[key].id}"> ${data.user_list[key].id} </option>`);
