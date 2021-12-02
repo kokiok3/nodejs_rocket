@@ -81,11 +81,6 @@
                     <div class="chat_editor">
                         <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
                         <div class="chat_btns">
-                            <div class="chat_each_btn">
-                                <button type="button"><i class="far fa-image"></i></button>
-                                <button type="button"><i class="far fa-smile"></i></button>
-                                <button type="button"><i class="fas fa-at"></i></button>
-                            </div>
                             <button type="button" class="send_btn" onclick="send(event, 2)"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
@@ -113,6 +108,15 @@
             <div class="chatting_1">
                 <div class="chat_back">
                     <div class="chat_history"></div>
+                </div>
+                <div class="writing writing_opacity">
+                    <span class="writing_txt">상대방이 대화 작성 중 </span>
+                    <div class="lds-ellipsis">
+                        <div class="ball"></div>
+                        <div class="ball"></div>
+                        <div class="ball"></div>
+                        <div class="ball"></div>
+                    </div>
                 </div>
                 <div class="chat_whisper d-none">
                     <select name="whisper" id="whisper" size="2" onchange="select_whisper(event)">
@@ -189,46 +193,58 @@
 
         //오늘날짜와 시간 변수
         let new_date;
-        let now_year;
-        let now_month;
-        let now_date;
-        let now_hour;
-        let now_minutes;
+        let stamp_year;
+        let stamp_month;
+        let stamp_date;
+        let stamp_hour;
+        let stamp_minute;
+        let stamp_second;
         let today_for_class;
         let today;
         let what_time;
+        let last_msg;
 
         //오늘날짜 생성
         window.onload= stamp_today();
         function stamp_today(){
             new_date = new Date();
-            now_year = new_date.getFullYear();
-            now_month = new_date.getMonth()+1;
-            now_date = new_date.getDate();
-            today_for_class = now_year +'_'+ now_month +'_'+ now_date;
-            today = `${now_year}년 ${now_month}월 ${now_date}일`;
+            stamp_year = new_date.getFullYear();
+            stamp_month = new_date.getMonth()+1;
+            stamp_date = new_date.getDate();
+            today_for_class = stamp_year +'_'+ stamp_month +'_'+ stamp_date;
+            today = `${stamp_year}년 ${stamp_month}월 ${stamp_date}일`;
         }
+        const last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
+        const stamp_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
+        function right_stamp_date(){
+
+        }
+
         //시간 생성
         function stamp_time(){
             new_date = new Date();
-            now_hour = new_date.getHours();
-            now_minutes = new_date.getMinutes();
-            if(now_hour>=12){ //오후
-                if((now_hour-12)>=10){
-                    return what_time = `${now_hour-12}:${now_minutes}pm`;
+            stamp_year = new_date.getFullYear();
+            stamp_month = new_date.getMonth()+1;
+            stamp_date = new_date.getDate();
+            stamp_hour = new_date.getHours();
+            stamp_minute = new_date.getMinutes();
+            stamp_second = new_date.getSeconds();
+            if(stamp_hour>=12){ //오후
+                if((stamp_hour-12)>=10){
+                    return what_time = `${stamp_hour-12}:${stamp_minute}pm`;
                 }else{
-                    return what_time = `0${now_hour-12}:${now_minutes}pm`;
+                    return what_time = `0${stamp_hour-12}:${stamp_minute}pm`;
                 }
             }
-            else if(now_hour>=1){ //오전
-                if(now_hour>=10){
-                    return what_time = `${now_hour}:${now_minutes}am`;
+            else if(stamp_hour>=1){ //오전
+                if(stamp_hour>=10){
+                    return what_time = `${stamp_hour}:${stamp_minute}am`;
                 }else{
-                    return what_time = `0${now_hour}:${now_minutes}am`;
+                    return what_time = `0${stamp_hour}:${stamp_minute}am`;
                 }
             }
             else{ //오전 12시
-                return what_time = `${now_hour+12}:${now_minutes}am`;
+                return what_time = `${stamp_hour+12}:${stamp_minute}am`;
             }
         }
 
@@ -283,12 +299,37 @@
             $('#whisper')[0].selectedIndex = -1; //selectIndex는 select태그에 자동 선택할 인덱스를 정하는 메서드
         }
 
+        //입력중인 메세지
+        let count_e = 0;
+        $('.chat_input_1').on('input', writing);
+        function writing(e){
+            count_e += 1;
+            if(count_e == 1){
+                writing_one();
+            }else if(e.target.textLength == 0){
+                writing_zero();
+            }
+        }
+        function writing_one(){
+            socket.emit('writing', {
+                one: '1',
+                user_name: userName
+            });
+        }
+        function writing_zero(){
+            count_e = 0;
+            socket.emit('writing', {
+                zero: '0',
+                user_name: userName
+            });
+        }
+
         //채팅입력시 '보내기' css활성화
-        $('.chat_input_1').on('keyup', active_send_btn);
-        $('.chat_input_2').on('keyup', active_send_btn);
+        $('.chat_input_1').on('input', active_send_btn);
+        $('.chat_input_2').on('input', active_send_btn);
         function active_send_btn(e){
         let chat_input_mode = e.target.className.charAt(11);
-            if(e.target.value.trim() == ''){
+            if(e.target.value == ''){
                 $(`.chatting_${chat_input_mode} .send_btn`).removeClass('active_btn');
             }else{
                 $(`.chatting_${chat_input_mode} .send_btn`).addClass('active_btn');
@@ -302,22 +343,24 @@
             if(e.isComposing || e.keyCode === 229){
                 console.log(e.isComposing)
                 return;
-            }else if(e.ctrlKey && e.code=='Enter'){
+            }else if(e.ctrlKey && e.code == 'Enter'){
+                console.log(e);
                 let caret = e.target.selectionStart;
                 e.target.setRangeText("\n", caret, caret, "end");
-            }else if(e.which === 13){
+            }
+            else if(e.code == 'Enter'){
                 if($(this).val().trim() == ''){
-                    alert('메세지입력해줘');
+                    // alert('메세지입력해줘');
                     e.preventDefault();
                     return;
-                }
-                else{
+                }else{
                     e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
                     if($(this)[0].parentNode.previousElementSibling.classList[0] == 'chat_whisper'){
                         send(e, 1);
                     }else{
                         send(e, 2);
                     }
+                    writing_zero();
                 }
             }
         }
@@ -332,8 +375,9 @@
 
         //채팅 보내기
         function send(e, mode){
+            console.log($(`.chat_input_${mode}`));
             if($(`.chat_input_${mode}`).val().trim() == ''){
-                alert('메세지입력해줘');
+                // alert('메세지입력해줘');
                 e.preventDefault();
                 return;
             }else{
@@ -420,7 +464,7 @@
             // console.log($('input[name=user_name]').val().trim());
             // console.log($(`.participants_name.${userName}`)[0].innerText.trim());
             if($('input[name=user_name]').val().trim() == ''){
-                console.log('닉네임을 입력해줘');
+                // console.log('닉네임을 입력해줘');
                 $('#user_name').val(userName);
                 e.preventDefault(); //form전송 방지
                 //닉네임이 기존과 같을 경우
@@ -433,7 +477,7 @@
                 $('.modal_close').trigger('click');
             }
             else{
-                console.log('닉네임 바꿀거야')
+                // console.log('닉네임 바꿀거야')
                 e.preventDefault(); //form전송 방지
                 $('.modal_close').trigger('click');
                 return 'go_next';
@@ -535,6 +579,16 @@
             }
         });
 
+        socket.on('writing', (data)=>{
+            if(data.socket_id != socketId){
+                if(data.data.one){
+                    $('.writing').removeClass('writing_opacity');
+                }else if(data.data.zero){
+                    $('.writing').addClass('writing_opacity');
+                }
+            }
+        })
+
         socket.on('new_msg', (data)=>{
             // console.log(`메세지 보낸사람은 ${data.socket_id} 나의 아이디는 ${socketId}`)
             // 오늘날짜 생성
@@ -620,8 +674,7 @@
         //유저네임 변경: 모두적용
         socket.on('change_user_name_all', (data)=>{
             //닉네임 변경
-            console.log('설마');
-            $(`.participants_name.${data.before_user_name}, .${data.before_user_name} .msg_name, .whisper_op.${data.before_user_name}`).text(data.profile.user_name);
+            $(`.participants_name.${data.before_user_name} .participants_user_name, .${data.before_user_name} .msg_name, .whisper_op.${data.before_user_name}`).text(data.profile.user_name);
             $(`.whisper_op.${data.before_user_name}`).val(data.profile.user_name); //whisper_op의 value값 변경
             $(`.${data.before_user_name}`).switchClass(data.before_user_name, data.profile.user_name);
 

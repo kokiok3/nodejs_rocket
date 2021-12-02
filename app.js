@@ -129,7 +129,6 @@ io.on('connection', function(socket){
     });
 
     socket.on('change_profile_pic', (data)=>{
-        console.log('chage profile pic: ', data);
         io.emit('change_profile_pic', {
             profile: data,
             profile_pic: fs_rename
@@ -137,13 +136,15 @@ io.on('connection', function(socket){
         fs_rename = undefined;
     });
 
-
-
+    socket.on('writing', (data)=>{
+        console.log(data);
+        // data == one or zero, user_name
+        io.emit('writing',{socket_id: socket.id, data: data});
+    })
 
     let whisper_to;
     socket.on('send', (data)=>{
         // console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
-        // console.log('send!!!!:', msg);
         io.emit('new_msg',{socket_id: socket.id, user_info: data, whisper: whisper_to});
         console.log('userInfo: ', data);
         whisper_to = undefined;
