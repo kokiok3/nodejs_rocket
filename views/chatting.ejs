@@ -17,6 +17,10 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     <link rel="icon" href="../static/favicon/rocket1.ico" type="image/x-icon" sizes="16x16">
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!--    메모장-->
+    <link rel="stylesheet" type="text/css" href="../scripts/content-tools.min.css">
+    <script src="../scripts/content-tools.min.js"></script>
+    <script src="../scripts/editor.js"></script>
     <style>
         body{
             font-family: 'Noto Sans KR', sans-serif;
@@ -66,25 +70,32 @@
             <button type="button" class="setting_hamburger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fas fa-bars"></i></button>
         </div>
         <div id="second_bar">
-            <button type="button" class="btn_mychat" onclick="btn_mychat()">나와의 채팅</button>
-            <div class="my_chat d-none">
-                <div class="my_chat_header">
+            <button type="button" class="btn_mychat" onclick="btn_mychat()">메모</button>
+            <div class="memo_list d-none">
+                <div class="memo_list_header">
                     <button>
                         <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
                     </button>
-                    <div class="my_chat_border"></div>
                 </div>
-                <div class="chatting_2">
-                    <div class="chat_back">
-                        <div class="chat_history"></div>
-                    </div>
-                    <div class="chat_editor">
-                        <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
-                        <div class="chat_btns">
-                            <button type="button" class="send_btn" onclick="send(event, 2)"><i class="fas fa-paper-plane"></i></button>
+                <div class="memo_list_body">
+                    <div class="write_memo">
+                        <div class="write_memo_i">
+                            <i class="far fa-sticky-note"></i>
                         </div>
+                        <div>첫 메모를 작성해보세요</div>
                     </div>
                 </div>
+                <div class="memo_list_footer" onclick="add_memo()">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+            <div class="memo_textarea d-none">
+                <div class="memo_list_header">
+                    <button>
+                        <i class="fas fa-arrow-left" onclick="memo_off()"></i>
+                    </button>
+                </div>
+                <div class="memo_each"></div>
             </div>
             <!-- 참여자 -->
             <div class="participants_bar">
@@ -103,7 +114,7 @@
         </div>
         <div id="chat_bar">
             <div id="chat_name">
-                <span>마지막 대화 50분 전</span>
+                <span class="elapse_time elapse_opacity"></span>
             </div>
             <div class="chatting_1">
                 <div class="chat_back">
@@ -156,12 +167,12 @@
                         <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
                     </div>
                 </div>
-                <div class="my_chat d-none">
-                    <div class="my_chat_header">
+                <div class="memo_list d-none">
+                    <div class="memo_list_header">
                         <button>
                             <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
                         </button>
-                        <div class="my_chat_border"></div>
+                        <div class="memo_list_border"></div>
                     </div>
                     <div class="chatting_2">
                         <div class="chat_back">
@@ -186,13 +197,102 @@
     </div>
     <script>
         //이미지전송
-        $('.btn_send_img').click(function(){$('input[name=btn_send_img]').trigger('click');});
-        function btn_send_img(){
+        // $('.btn_send_img').click(function(){$('input[name=btn_send_img]').trigger('click');});
+        // function btn_send_img(){
+        //
+        // }
 
+        // 메모 만들기
+        // window.addEventListener('load', function() {
+        //     var editor;
+        // });
+
+        let memo_num = 0;
+        function add_memo(){
+            stamp_today();
+            memo_num += 1;
+            $('.memo_list_body').append(`
+                <div class="memo${memo_num} memo_wrap"  onclick="memo_on(${memo_num})">
+                    <button class="memo">
+                        <span class="memo_btn">
+                            <span class="memo_title">제목 없음</span>
+                            <span  class="memo_time">${today}</span>
+                        </span>
+                    </button>
+                    <i class="fas fa-times del_memo" onclick="del_memo(${memo_num})"></i>
+                </div>
+            `);
+            $('.memo_each').append(
+                `<textarea data-editable data-name="main-content" name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+            )
+            $('.write_memo').addClass('d-none');
+        }
+        let del;
+        function del_memo(number){
+            console.log('삭제됐다');
+            del = 'del';
+            $(`.memo${number}, .memo_input${number}`).remove();
+            if($('.memo_list_body').children().length == 1){
+                $('.write_memo').removeClass('d-none');
+            }
         }
 
+        let get_memo_num;
+        function memo_on(number){
+            if(del == 'del'){
+                del = undefined;
+                return;
+            }
+            console.log('메모켜짐');
+            memo_num = number;
+            $(`.memo_list, .memo_textarea, .memo_input${number}`).toggleClass('d-none');
+            $('#chat_bar').css({'box-shadow': 'none', 'border-left': '1px solid var(--color-deep)'})
+
+        }
+        function memo_off(){
+            // console.log(memo_num);
+            $(`.memo_textarea, .memo_list, .memo_input${memo_num}`).toggleClass('d-none');
+            if($(`.memo_input${memo_num}`).val().trim() != "" ){
+                $(`.memo${memo_num} .memo_title`).text($(`.memo_input${memo_num}`).val());
+            }else{
+                $(`.memo${memo_num} .memo_title`).text('제목 없음');
+            }
+        }
+
+        // 메세지 경과 시간
+        let last_msg_time;
+        let now_time;
+        let elapse_time
+        let elapse = setInterval(function elapse(){
+            if(last_msg_time != undefined){
+                what_time_now();
+                last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
+                now_time = new Date(now_year, now_month-1, now_date, now_hour, now_minute, now_second);
+                elapse_time = now_time - last_msg_time;
+                socket.emit('elapse_time', elapse_time)
+            }
+        }, 10000);
+
         //오늘날짜와 시간 변수
-        let new_date;
+        let new_now_date;
+        let now_year;
+        let now_month;
+        let now_date;
+        let now_hour;
+        let now_minute;
+        let now_second;
+        function what_time_now(){
+            new_now_date = new Date();
+            now_year = new_now_date.getFullYear();
+            now_month = new_now_date.getMonth()+1;
+            now_date = new_now_date.getDate();
+            now_hour = new_now_date.getHours();
+            now_minute = new_now_date.getMinutes();
+            now_second = new_now_date.getSeconds();
+        }
+
+        //메세지 보낸 날짜와 시간 변수
+        let new_stamp_date;
         let stamp_year;
         let stamp_month;
         let stamp_date;
@@ -207,28 +307,27 @@
         //오늘날짜 생성
         window.onload= stamp_today();
         function stamp_today(){
-            new_date = new Date();
-            stamp_year = new_date.getFullYear();
-            stamp_month = new_date.getMonth()+1;
-            stamp_date = new_date.getDate();
+            new_stamp_date = new Date();
+            stamp_year = new_stamp_date.getFullYear();
+            stamp_month = new_stamp_date.getMonth()+1;
+            stamp_date = new_stamp_date.getDate();
             today_for_class = stamp_year +'_'+ stamp_month +'_'+ stamp_date;
             today = `${stamp_year}년 ${stamp_month}월 ${stamp_date}일`;
-        }
-        const last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
-        const stamp_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
-        function right_stamp_date(){
-
         }
 
         //시간 생성
         function stamp_time(){
-            new_date = new Date();
-            stamp_year = new_date.getFullYear();
-            stamp_month = new_date.getMonth()+1;
-            stamp_date = new_date.getDate();
-            stamp_hour = new_date.getHours();
-            stamp_minute = new_date.getMinutes();
-            stamp_second = new_date.getSeconds();
+            new_stamp_date = new Date();
+            stamp_year = new_stamp_date.getFullYear();
+            stamp_month = new_stamp_date.getMonth()+1;
+            stamp_date = new_stamp_date.getDate();
+            stamp_hour = new_stamp_date.getHours();
+            stamp_minute = new_stamp_date.getMinutes();
+            stamp_second = new_stamp_date.getSeconds();
+            last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
+            if(stamp_minute < 10){
+                stamp_minute = `0${stamp_minute}`;
+            }
             if(stamp_hour>=12){ //오후
                 if((stamp_hour-12)>=10){
                     return what_time = `${stamp_hour-12}:${stamp_minute}pm`;
@@ -250,9 +349,7 @@
 
         //thred 뒤로가기
         function btn_mychat (){
-            $('.my_chat').toggleClass('d-none');
-            $('.btn_mychat').toggleClass('d-none');
-
+            $('.memo_list, .btn_mychat, .participants_bar').toggleClass('d-none');
         }
         function btn_side_view(){
             console.log('준비중 사이드뷰')
@@ -324,11 +421,19 @@
             });
         }
 
-        //채팅입력시 '보내기' css활성화
-        $('.chat_input_1').on('input', active_send_btn);
-        $('.chat_input_2').on('input', active_send_btn);
+        //웹페이지 종료시 '입력중인 메세지창' 닫기
+        window.addEventListener('unload', un_load);
+        function un_load(){
+            count_e = 0;
+            writing_zero();
+        }
+
+        //채팅입력시 '보내기 버튼' css활성화
+        $('.chat_input_1').on('keyup', active_send_btn);
+        $('.chat_input_2').on('keyup', active_send_btn);
+        let input_value;
         function active_send_btn(e){
-        let chat_input_mode = e.target.className.charAt(11);
+            let chat_input_mode = e.target.className.charAt(11);
             if(e.target.value == ''){
                 $(`.chatting_${chat_input_mode} .send_btn`).removeClass('active_btn');
             }else{
@@ -341,7 +446,6 @@
         $('.chat_input_2').on('keydown', about_enter);
         function about_enter(e){
             if(e.isComposing || e.keyCode === 229){
-                console.log(e.isComposing)
                 return;
             }else if(e.ctrlKey && e.code == 'Enter'){
                 console.log(e);
@@ -375,7 +479,7 @@
 
         //채팅 보내기
         function send(e, mode){
-            console.log($(`.chat_input_${mode}`));
+            // console.log($(`.chat_input_${mode}`));
             if($(`.chat_input_${mode}`).val().trim() == ''){
                 // alert('메세지입력해줘');
                 e.preventDefault();
@@ -558,26 +662,66 @@
             }
 
             //입장 메세지
-            $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 입장하셨습니다. </p>`);
+            $('.chatting_1 .chat_history').append(`<p class='sys'> <span class='${data.socket_id}'>${data.socket_id}</span> 님이 입장하셨습니다 </p>`);
             $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
 
             //참여자 목록과 인원 && 귓속말 목록
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
-                $('.participants').append(`<div class='participants_name ${data.user_list[key].user_name}'>
-                    <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
-                        <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
-                    </div>
-                    <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                if(data.user_list[key].id == socketId){
+                    $('.participants').prepend(`
+                    <div class='participants_name ${data.user_list[key].user_name}'>
+                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
+                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
+                        </div>
+                        <span class='participants_me'> me </span>
+                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
                     </div>`
-                );
+                    );
+                }else{
+                    $('.participants').append(`
+                    <div class='participants_name ${data.user_list[key].user_name}'>
+                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
+                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
+                        </div>
+                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                    </div>`
+                    );
+                }
                 if(socketId != data.user_list[key].id) {
                     $('#whisper').append(`<option class='whisper_op ${data.user_list[key].user_name}' value="${data.user_list[key].user_name}"> ${data.user_list[key].user_name} </option>`);
                 }
                 $('.participants_number').text(data.user_list.length + '명');
             }
         });
+
+        socket.on('elapse_time', (data)=>{
+            console.log(data)
+            let data_elapse_time;
+            if(data < 60000){ // 1분 미만
+                data_elapse_time = data / 1000;
+                $('.elapse_time').text(`마지막 대화 ${data_elapse_time}초 전`);
+            }else if(data < 3600000){ // 1시간 미만
+                data_elapse_time = Math.floor(data / 1000 / 60);
+                $('.elapse_time').text(`마지막 대화 ${data_elapse_time}분 전`);
+            }else if(data < 86400000){ // 1일 미만
+                data_elapse_time = Math.floor(data / 1000 / 60 / 60);
+                $('.elapse_time').text(`마지막 대화 ${data_elapse_time}시간 전`);
+            }else if(data < 2592000000){ // 30일 미만
+                data_elapse_time = Math.floor(data / 1000 / 60 / 60 / 24);
+                $('.elapse_time').text(`마지막 대화 ${data_elapse_time}일 전`);
+            }else{
+                data_elapse_time = Math.floor(data / 1000 / 60 / 60 / 24 / 30);
+                $('.elapse_time').text(`마지막 대화 30일 전`);
+            }
+            $('.elapse_time').removeClass('elapse_opacity');
+        });
+
+        socket.on('stop_elapse_time', ()=>{
+            clearInterval(elapse);
+            $('.elapse_time').addClass('elapse_opacity');
+        })
 
         socket.on('writing', (data)=>{
             if(data.socket_id != socketId){
@@ -675,6 +819,7 @@
         socket.on('change_user_name_all', (data)=>{
             //닉네임 변경
             $(`.participants_name.${data.before_user_name} .participants_user_name, .${data.before_user_name} .msg_name, .whisper_op.${data.before_user_name}`).text(data.profile.user_name);
+            $(`p.sys span.${data.before_user_name}`).text(data.profile.user_name);
             $(`.whisper_op.${data.before_user_name}`).val(data.profile.user_name); //whisper_op의 value값 변경
             $(`.${data.before_user_name}`).switchClass(data.before_user_name, data.profile.user_name);
 
@@ -682,8 +827,8 @@
         //프사 변경: 모두적용
         socket.on('change_profile_pic', (data)=>{
             //프사 변경
-            $(`.setting_mypic.${data.profile.user_name}, .${data.profile.user_name} .msg_profile_pic`).css({'background-image': `url(../${data.profile_pic})`});
-            $(`.setting_mypic.${data.profile.user_name}  img, .${data.profile.user_name} .msg_profile_pic img`).addClass('d-none');
+            $(`.setting_mypic.${data.profile.user_name}, .participants_name.${data.profile.user_name} .participants_user_pic, .${data.profile.user_name} .msg_profile_pic`).css({'background-image': `url(../${data.profile_pic})`});
+            $(`.setting_mypic.${data.profile.user_name}  img, .participants_name.${data.profile.user_name} .participants_user_pic > img,  .${data.profile.user_name} .msg_profile_pic img`).addClass('d-none');
 
         });
 
@@ -694,7 +839,7 @@
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
             }
 
-            $('.chatting_1 .chat_history').append(`<p class='sys'> ${data.socket_id} 님 퇴장하셨습니다. </p>`);
+            $('.chatting_1 .chat_history').append(`<p class='sys'> <span class='${data.socket_id}'>${data.socket_id}</span> 님이 퇴장하셨습니다 </p>`);
             $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
 
             //퇴장시 참여자 목록과 인원 && 귓속말
@@ -702,16 +847,35 @@
             $('.whisper_op').remove();
             for(let key in data.user_list){
                 // console.log(data.user_list[key]);
-                $('.participants').append(`<div class='participants_name ${data.user_list[key].user_name}'>
-                    <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
-                        <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
-                    </div>
-                    <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                if(data.user_list[key].id == socketId){
+                    $('.participants').prepend(`
+                    <div class='participants_name ${data.user_list[key].user_name}'>
+                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
+                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
+                        </div>
+                        <div class='participants_me'> me </div>
+                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
                     </div>`
-                );
+                    );
+                }else{
+                    $('.participants').append(`
+                    <div class='participants_name ${data.user_list[key].user_name}'>
+                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
+                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
+                        </div>
+                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                    </div>`
+                    );
+                }
                 $('.participants_number').text(data.user_list.length + '명');
                 if(socketId != data.user_list[key].id){
                     $('#whisper').append(`<option class='whisper_op' value="${data.user_list[key].id}"> ${data.user_list[key].id} </option>`);
+                }
+
+                //참여자 인원이 1명일때 elapse 기능 해제
+                let participants_number = data.user_list.length;
+                if(participants_number == 1){
+                    socket.emit('stop_elapse_time');
                 }
             }
         });
