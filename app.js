@@ -108,8 +108,14 @@ io.on('connection', function(socket){
     io.emit('enter', {socket_id: socket.id , user_list: user_list});
     //(io.emit는 서버에 연결되어있는 모든사람한테 연결)
 
+    socket.on('elapse_time', (data)=>{
+        //data == elapse_time
+        io.emit('elapse_time', data);
+    });
 
-
+    socket.on('stop_elapse_time', ()=>{
+        io.emit('stop_elapse_time');
+    });
 
     socket.on('change_user_name', (data)=>{
         let before_user_name;
@@ -137,7 +143,6 @@ io.on('connection', function(socket){
     });
 
     socket.on('writing', (data)=>{
-        console.log(data);
         // data == one or zero, user_name
         io.emit('writing',{socket_id: socket.id, data: data});
     })
