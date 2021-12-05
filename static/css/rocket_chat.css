@@ -76,15 +76,13 @@ body{
   grid-template-columns: 68px 250px auto;
 }
 #setting_bar {
-  /*남색*/
-  /*background: linear-gradient(90deg, rgba(73, 80, 99, 1) 0%, rgba(63, 68, 87, 1) 65%);*/
-  background: rgb(64,69,88);
-  background: linear-gradient(140deg, rgba(64,69,88,1) 0%, rgba(64,69,88,1) 50%, rgba(48,52,68,1) 100%);
   height: 100%;
   padding: var(--padding-10);
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgb(34,48,60);
+  background: linear-gradient(161deg, rgba(34,48,60,1) 0%, rgb(43 59 74) 100%);
 }
 #setting_bar > * {
   margin-top: calc(4px + var(--padding-10));
@@ -95,7 +93,6 @@ body{
   outline: none;
 }
 #setting_bar .setting_mypic {
-  background-color: #fff176;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -104,8 +101,8 @@ body{
   border: 3px solid #fff;
 }
 #setting_bar .setting_mypic > img{
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
 }
 #setting_bar > .setting_custom, .setting_hamburger {
   display: flex;
@@ -114,15 +111,11 @@ body{
   background-color: transparent;
   font-size: 24px;
   color: var(--color-far_deeper);
-}
-#setting_bar > .setting_custom:active {
-  /* text-decoration: none;
-  transform: scale(97%);
-  border-radius: 10%;
-  outline: none; */
+  transition: 0.5s;
 }
 #setting_bar > .setting_custom:hover, .setting_hamburger:hover {
-  color: var(--color-light);
+  /*color: white;*/
+  color: #76beb0;
 }
 #setting_bar .setting_mypic:hover:after {
   content: '현재 프로필 사진';
@@ -148,37 +141,45 @@ body{
   border-radius: 5px;
 }
 #setting_change {
-  background-color: #4dd0e1;
+  background: rgb(128,221,203);
+  background: linear-gradient(161deg, rgba(128,221,203,1) 0%, rgba(118,190,176,1) 94%);
+  color: white;
   font-weight: bold;
 }
 #setting_change:hover {
-  background-color: rgb(66, 179, 194);
+  background: rgb(128,221,203);
+  background: linear-gradient(161deg, rgb(111 190 175) 0%, rgb(108 174 161) 94%);
+}
+.m_hamburger_title {
+  color: var(--color-far_deeper);
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: calc(2px + var(--margin-2));
 }
 #second_bar {
-  /*하얀*/
-  /*background-color: white;*/
-  /*남색*/
-  background: linear-gradient(90deg, #5c657b 0%, #586179 65%);
-  /*로켓*/
-  /*background: rgb(187,152,217);*/
-  /*background: linear-gradient(75deg, rgba(187,152,217,1) 0%, rgba(159,112,231,1) 100%);*/
-  height: 100%;
-  padding: var(--padding-10);
+  /* background: linear-gradient(90deg, #5c657b 0%, #586179 65%); */
+  height: calc(100vh - 60px);
   color: var(--color-border);
+  position: relative;
+  background: rgb(44,57,71);
+  background: linear-gradient(176deg, rgb(54 69 86) 0%, rgba(55,71,88,1) 100%);
 }
 #second_bar .btn_mychat {
-  width: calc(100% - 20px);
-  margin-top: calc(5 * var(--margin-2));
-  margin-left: calc(5 * var(--margin-2));
+  width: calc(100% - 40px);
+  margin: 0 20px;
+  margin-top: 24px;
   padding: var(--padding-10);
-  background-color: #E9ECF1;
-  border-radius: 5px;
+  background-color: #76beb0;
+  color: white;
+  border-radius: 50px;
   position: relative;
   border: none;
+  transition: 0.5s;
 }
 #second_bar .btn_mychat:hover{
   color: #fff;
-  background-color: rgb(143, 154, 192);
+  background: rgb(128,221,203);
+  /*background: linear-gradient(161deg, rgb(111 190 175) 0%, rgb(108 174 161) 94%);*/
 }
 #second_bar .btn_mychat:hover:before{
   border-bottom: 10px solid var(--color-white);
@@ -208,6 +209,146 @@ body{
 }
 #second_bar .btn_mychat:hover:after {
   content: '나 혼자 쓰는 채팅 공간입니다.';
+}
+#second_bar .memo_list {
+  /*background-color: white;*/
+  height: calc(100% - 75px);
+}
+#second_bar .memo_list_header {
+  /*margin-top: 75px;*/
+}
+.memo_list_header button {
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  top: 24px;
+  right: 20px;
+}
+.memo_list_header button *,
+.memo_list_footer i {
+  vertical-align: middle;
+  font-size: 20px;
+  color: var(--color-deeper);
+  transition: 0.3s;
+  cursor: pointer;
+}
+.memo_list_header button *:hover,
+.memo_list_footer i:hover {
+  color: #76beb0;
+}
+.memo_list_body {
+  height: calc(100vh - 185px);
+  border-top: 1px solid var(--color-deeper);
+  overflow-y: auto;
+  margin-top: 75px;
+}
+.memo_list_body .write_memo{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100vh - 186px);
+  justify-content: center;
+}
+.memo_list_body .write_memo_i{
+  font-size: 40px;
+}
+.memo_list_body .memo_wrap {
+  position: relative;
+}
+.memo_list_body .memo_wrap .memo {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  outline: none;
+  border: none;
+  background: transparent;
+}
+.memo_list_body .memo_wrap .memo .memo_btn {
+  padding: 0 13px;
+  width: 84%;
+  height: 80px;
+  border-bottom: 1px solid var(--color-deeper);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.memo_list_body .memo_wrap .memo:hover {
+  background: linear-gradient(176deg, rgb(66 82 100) 0%, rgb(63 81 98) 100%);
+}
+.memo_list_body .memo_wrap .memo:focus {
+  box-shadow: 0 10px 20px 0px rgba(45,50,65,0.5);
+  z-index: 2;
+}
+.memo_list_body .memo_wrap .memo:focus .memo_btn{
+  border: none;
+}
+.memo_list_body .memo_wrap .memo .memo_title {
+  width: 84%;
+  height: 25px;
+  color: white;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.memo_list_body .memo_wrap .memo .memo_time {
+  color: var(--color-deeper);
+  font-size: 14px;
+}
+.memo_list_body .memo_wrap .del_memo{
+  display: none;
+  color:  var(--color-deeper);
+  font-size: 16px;
+  position: absolute;
+  top: 20px;
+  right: 33px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.memo_list_body .memo_wrap:hover .del_memo {
+  display: block;
+}
+.memo_list_body .memo_wrap .del_memo:hover {
+  color: #76beb0;
+}
+.memo_list_body .memo_wrap .del_memo:hover .memo{
+  background: linear-gradient(176deg, rgb(66 82 100) 0%, rgb(63 81 98) 100%);
+}
+.memo_list .memo_list_footer {
+  padding: 10px;
+  width: 100%;
+  height: 50px;
+  color: white;
+  border-top: 1px solid var(--color-deeper);
+  text-align: center;
+  line-height: 30px
+}
+.memo_textarea {
+  height: calc(100% - 75px);
+}
+.memo_textarea .memo_list_header{
+  background-color: white;
+}
+.memo_textarea .memo_each {
+  height: 100%;
+  padding: 15px;
+  background-color: white;
+  margin-top: 75px;
+}
+.memo_textarea .memo_each > * {
+  width: 100%;
+  height: 100%;
+  border: none;
+  overflow-y: auto;
+  resize: none;
+}
+.memo_textarea .memo_each > *:focus {
+  outline: none;
+}
+.participants_bar {
+  padding: var(--padding-10);
 }
 .participants_bar .participants_header {
   display: flex;
@@ -239,7 +380,10 @@ body{
 .participants_bar .participants_name > * {
   margin: 0 4px;
 }
+
 .participants_bar .participants .participants_user_pic{
+  background-size: cover;
+  background-position: center;
   width: calc(var(--profile-pic-40) - 10px);
   height: calc(var(--profile-pic-40) - 10px);
   border-radius: 40%;
@@ -253,11 +397,21 @@ body{
   width: 20px;
   height: 20px;
 }
+.participants_bar .participants_me {
+  background-color: #76beb0;
+  color: white;
+  border-radius: 50px;
+  width: 40px;
+  height: 20px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 17px;
+}
 .participants_bar .participants_user_name{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 175px;
+  width: 124px;
 }
 #chat_bar {
   background-color: var(--color-light);
@@ -269,9 +423,15 @@ body{
 }
 #chat_name {
   padding: var(--padding-10);
+  height: 50px;
 }
-#chat_name > span {
+#chat_name .elapse_time {
   color: var(--color-deeper);
+  transition: 0.5ms;
+}
+#chat_name .elapse_time.elapse_opacity {
+  opacity: 0;
+  /*transition: 0.5ms;*/
 }
 .chatting_1{
   display: flex;
@@ -286,6 +446,7 @@ body{
 }
 .chat_history {
   padding: var(--padding-10) 50px;
+  padding-top: 0;
 }
 .sys,
 .sys_date {
@@ -342,7 +503,6 @@ body{
   height: var(--profile-pic-40);
   background-size: cover;
   background-position: center;
-  background-color: red;
   border-radius: 40%;
   border: none;
   outline: none;
@@ -354,13 +514,37 @@ body{
   width: 30px;
   height: 30px;
 }
-.msg_content {
-  width: 90%;
+.my_msg .msg_content {
+  /*width: 90%;*/
+  margin-right: 10px;
 }
 .my_msg .msg_txt {
-  margin-left: 100px;
   text-align: right;
-  white-space: pre-wrap
+  white-space: pre-wrap;
+  padding: 10px;
+  /*margin: 5px 0;*/
+  min-width: 20px;
+  max-width: 350px;
+  word-wrap: break-word;
+  background: rgb(128,221,203);
+  background: linear-gradient(161deg, rgba(128,221,203,1) 0%, rgba(118,190,176,1) 94%);
+  color: black;
+  border-radius: 10px;
+  display: inline-block;
+  position: relative;
+}
+.my_msg .msg_txt:after {
+  content: '';
+  position: absolute;
+  border: 0px solid transparent;
+  border-right: 10px solid rgba(128,221,203,1);
+  border-radius: 0 20px 0;
+  width: 14px;
+  height: 30px;
+  transform: rotate(90deg);
+  top: -5px;
+  right: 0px;
+  /*z-index: -1;*/
 }
 .my_msg .msg_nameNtime {
   display: flex;
@@ -372,15 +556,39 @@ body{
 .new_msg:hover {
   background-color: var(--color-light);
 }
+.whisper_msg .msg_content,
+.new_msg .msg_content {
+  /*width: 90%;*/
+  margin-left: 10px;
+}
 .whisper_msg .msg_txt,
 .new_msg .msg_txt {
-  margin-right: 100px;
   text-align: left;
   white-space: pre-wrap;
-}
-.msg_txt {
-  max-width: 100%;
+  padding: 10px;
+  /*margin: 5px 0;*/
+  min-width: 20px;
+  max-width: 350px;
   word-wrap: break-word;
+  background: rgb(228,228,228);
+  background: linear-gradient(140deg, rgba(228,228,228,1) 0%, rgba(215,215,215,1) 100%);
+  color: black;
+  border-radius: 10px;
+  display: inline-block;
+  position: relative;
+}
+.whisper_msg .msg_txt:after,
+.new_msg .msg_txt:after {
+  content: '';
+  position: absolute;
+  border: 0px solid transparent;
+  border-top: 10px solid rgba(228,228,228,1);
+  border-radius: 0 20px 0;
+  width: 14px;
+  height: 30px;
+  transform: rotate(180deg);
+  top: -10px;
+  left: -10px;
 }
 .whisper_msg .msg_nameNtime,
 .new_msg .msg_nameNtime {
@@ -388,7 +596,6 @@ body{
   justify-content: flex-start;
   align-items: baseline;
 }
-/*  */
 .msg_nameNtime > * {
   margin: var(--margin-2);
 }
@@ -519,10 +726,11 @@ body{
   border: none;
   color: var(--color-far_deeper);
   font-weight: bold;
+  transition: 0.3s;
 }
 .chat_editor .btn_whisper:hover,
 .chat_editor btn_send_img:hover {
-  color: #9243d6;
+  color: #76beb0;
 }
 .chat_editor button:hover:after {
   position: absolute;
@@ -576,58 +784,20 @@ body{
   border: 1px solid var(--color-deep);
   width: 40px;
   height: 40px;
+  transition: 0.5s;
 }
 .chat_editor .send_btn.active_btn {
-  background: rgb(177,123,224);
+  transition: 0.3s;
+  /* background: rgb(177,123,224); */
   background: linear-gradient(140deg, rgba(177,123,224,1) 0%, rgba(146,67,214,1) 100%);
-  /*border: 1px solid #9243d6;*/
   color: white;
+  background: rgb(128,221,203);
+  background: linear-gradient(161deg, rgba(128,221,203,1) 0%, rgba(118,190,176,1) 94%);
 }
 #whisper {
   border: 1px solid var(--color-border);
   min-width: 205px;
   height: 30px;
-}
-.m_hamburger_title {
-  color: var(--color-far_deeper);
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin: calc(2px + var(--margin-2));
-}
-.my_chat {
-  height: 100%;
-}
-.my_chat_header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 47px;
-}
-.my_chat > .my_chat_header > button {
-  background-color: transparent;
-  border: none;
-  width: 30px;
-  height: 30px;
-}
-.my_chat > .my_chat_header > button > * {
-  vertical-align: middle;
-  font-size: 20px;
-  color: var(--color-deeper);
-}
-.my_chat > .my_chat_header > button > *:hover{
-  color: black;
-}
-.my_chat > .chatting_2 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: calc(100% - 47px);
-  background-color: var(--color-white);
-  border-top: 1px solid var(--color-border);
-}
-.my_chat > .chatting_2 > .chat_back {
-   height: calc(100% - 47px);
-  /*height: 100%;*/
 }
 @media screen and (max-width: 375px){
   #offcanvasRight{
@@ -760,4 +930,3 @@ body{
   .m_hamburger_setting_bar, .setting_hamburger, .chat_name{
     display: none;
   }
-}
