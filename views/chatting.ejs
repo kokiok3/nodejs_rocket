@@ -20,7 +20,8 @@
 <!--    메모장-->
     <link rel="stylesheet" type="text/css" href="../scripts/content-tools.min.css">
     <script src="../scripts/content-tools.min.js"></script>
-    <script src="../scripts/editor.js"></script>
+    <script src="../scripts/editor.js"><S/script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
     <style>
         body{
             font-family: 'Noto Sans KR', sans-serif;
@@ -29,7 +30,11 @@
 </head>
 <body>
     <div class="content1">
-        <span class="content1_name">Rocket Messenger</span>
+        <div class="content1_left">
+<!--            <img class="logo" src="../static/image/rocket_messenger_logo.png">-->
+            <i class="fab fa-rocketchat"></i>
+            <span class="content1_name">Rocket Messenger</span>
+        </div>
         <span class="content1_dev">Developed by Jeong Sohyun</span>
     </div>
     <div class="content2">
@@ -60,14 +65,17 @@
                 </div>
             </div>
         </div>
+        <!-- Modal Finish-->
         <div id="setting_bar">
             <button type="button" class="setting_mypic"></button >
             <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
-            <div class="m_hamburger_setting_bar">
-                <button type="button" class="setting_mypic"></button >
-                <div class="chat_name">메신저</div>
+            <div class="m_content1">
+                <div class="m_content1_left">
+                    <i class="fab fa-rocketchat"></i>
+                    <span class="content1_name">Rocket Messenger</span>
+                </div>
+                <button type="button" class="setting_hamburger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fas fa-bars"></i></button>
             </div>
-            <button type="button" class="setting_hamburger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fas fa-bars"></i></button>
         </div>
         <div id="second_bar">
             <button type="button" class="btn_mychat" onclick="btn_mychat()">메모</button>
@@ -134,63 +142,56 @@
                         <!--                <option selected>귓속말</option>-->
                     </select>
                 </div>
-                <div class="chat_editor">
-                    <button type="button" class="btn_whisper"><i class="fas fa-at"></i></button>
-                    <textarea name="chat_input" id="chat_input_1" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
-<!--                    <form action="" method="post" id="form_data" enctype="multipart/form-data">-->
-<!--                        <input type="file" name='btn_send_img' id="btn_send_img" class="d-none">-->
-<!--                        <button type="button" class="btn_send_img"><i class="far fa-image"></i></button>-->
-<!--                    </form>-->
-                    <button type="button" class="send_btn" onclick="send(event, mode=1)"><i class="fas fa-paper-plane"></i></button>
+                <div class="chat_footer">
+                    <div class="chat_editor">
+                        <button type="button" class="btn_whisper"><i class="fas fa-at"></i></button>
+                        <textarea name="chat_input" id="chat_input_1" class="chat_input_1" placeholder="메시지를 입력해주세요" autofocus></textarea>
+    <!--                    <form action="" method="post" id="form_data" enctype="multipart/form-data">-->
+    <!--                        <input type="file" name='btn_send_img' id="btn_send_img" class="d-none">-->
+    <!--                        <button type="button" class="btn_send_img"><i class="far fa-image"></i></button>-->
+    <!--                    </form>-->
+                        <button type="button" class="send_btn" onclick="send(event, mode=1)"><i class="fas fa-paper-plane"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
         <!--반응형-->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
             <div class="offcanvas-header">
-                <div class="m_hamburger_title">더 많은 기능</div>
-                <!--                <button type="button"  data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-sign-out-alt"></i></button>-->
+                <button type="button" data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-chevron-left"></i></button>
+                <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button>
             </div>
             <div class="offcanvas-body">
-                <div class="m_hamburger_thred_one">
-                    <button type="button" class="btn_mychat" onclick="btn_mychat()">메모장</button>
-<!--                    <button type="button" class="btn_side_view" onclick="btn_side_view()">사이드뷰</button>-->
-                    <div class="participants_header m_hamburger_participants">
+                <button type="button" class="btn_mychat" onclick="btn_mychat()">메모</button>
+                <div class="memo_list d-none">
+                    <div class="memo_list_body">
+                        <div class="write_memo">
+                            <div class="write_memo_i">
+                                <i class="far fa-sticky-note"></i>
+                            </div>
+                            <div>첫 메모를 작성해보세요</div>
+                        </div>
+                    </div>
+                    <div class="memo_list_footer" onclick="add_memo()">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+                <div class="memo_textarea d-none">
+                    <div class="memo_list_header">
+                        <button>
+                            <i class="fas fa-arrow-left" onclick="memo_off()"></i>
+                        </button>
+                    </div>
+                    <div class="memo_each"></div>
+                </div>
+                <!-- 참여자 -->
+                <div class="participants_bar">
+                    <div class="participants_header">
                         <div class="participants_icon"><i class="fas fa-user-friends"></i></div>
                         <div class="participants_txt">참여자</div>
                         <div class="participants_number"></div>
                     </div>
-                    <div class="participants m_hamburger_participants_list"></div>
-                    <div class="m_hamburger_footer">
-                        <button type="button"  data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-sign-out-alt"></i></button>
-                        <!--                        <button><i class="fas fa-arrow-left" onclick="thred_choice()"></i></button>-->
-                        <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button >
-                    </div>
-                </div>
-                <div class="memo_list d-none">
-                    <div class="memo_list_header">
-                        <button>
-                            <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
-                        </button>
-                        <div class="memo_list_border"></div>
-                    </div>
-                    <div class="chatting_2">
-                        <div class="chat_back">
-                            <div class="chat_history"></div>
-                        </div>
-                        <div class="chat_editor">
-                            <textarea name="chat_input" class="chat_input_2" placeholder="메시지를 입력해주세요" autofocus></textarea>
-                            <div class="chat_btns">
-                                <div class="chat_each_btn">
-                                    <button type="button"><i class="far fa-image"></i></button>
-                                    <button type="button"><i class="far fa-smile"></i></button>
-                                    <button type="button"><i class="fas fa-at"></i></button>
-                                </div>
-                                <button type="button" class="send_btn" onclick="send(event, 2)"><i class="fas fa-paper-plane"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="side_view"></div>
+                    <div class="participants"></div>
                 </div>
             </div>
         </div>
@@ -202,10 +203,13 @@
         //
         // }
 
-        // 메모 만들기
-        // window.addEventListener('load', function() {
-        //     var editor;
-        // });
+        //css mobile vh issue
+        let vh = window.innerHeight * 0.01
+        document.documentElement.style.setProperty('--vh', `${vh}px`)
+        window.addEventListener('resize', () => {
+            let vh = window.innerHeight * 0.01
+            document.documentElement.style.setProperty('--vh', `${vh}px`)
+        })
 
         let memo_num = 0;
         function add_memo(){
@@ -223,8 +227,11 @@
                 </div>
             `);
             $('.memo_each').append(
-                `<textarea data-editable data-name="main-content" name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+                `<div data-editable data-name="main-content" class="memo_input${memo_num} d-none "></div>`
             )
+            // $('.memo_each').append(
+            //     `<textarea name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+            // )
             $('.write_memo').addClass('d-none');
         }
         let del;
@@ -247,16 +254,19 @@
             memo_num = number;
             $(`.memo_list, .memo_textarea, .memo_input${number}`).toggleClass('d-none');
             $('#chat_bar').css({'box-shadow': 'none', 'border-left': '1px solid var(--color-deep)'})
-
+            $('.offcanvas-header').toggleClass('d-none');
         }
         function memo_off(){
             // console.log(memo_num);
-            $(`.memo_textarea, .memo_list, .memo_input${memo_num}`).toggleClass('d-none');
+            $(`.memo_textarea, .memo_list, .memo_input${memo_num}, .offcanvas-header`).toggleClass('d-none');
             if($(`.memo_input${memo_num}`).val().trim() != "" ){
                 $(`.memo${memo_num} .memo_title`).text($(`.memo_input${memo_num}`).val());
             }else{
                 $(`.memo${memo_num} .memo_title`).text('제목 없음');
             }
+        }
+        function btn_mychat (){
+            $('.memo_list, .btn_mychat, .participants_bar').toggleClass('d-none');
         }
 
         // 메세지 경과 시간
@@ -346,15 +356,6 @@
                 return what_time = `${stamp_hour+12}:${stamp_minute}am`;
             }
         }
-
-        //thred 뒤로가기
-        function btn_mychat (){
-            $('.memo_list, .btn_mychat, .participants_bar').toggleClass('d-none');
-        }
-        function btn_side_view(){
-            console.log('준비중 사이드뷰')
-        }
-
         //귓속말
         let chat_input_1 = document.getElementById('chat_input_1');
         let caret_whisper; //현재 커서 위치
