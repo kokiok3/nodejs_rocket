@@ -157,13 +157,18 @@
         </div>
         <!--반응형-->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-            <div class="offcanvas-header">
-                <button type="button" data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-chevron-left"></i></button>
-                <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button>
-            </div>
             <div class="offcanvas-body">
+                <div class="offcanvas-body_header">
+                    <button type="button" data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="setting_custom" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-cog"></i></button>
+                </div>
                 <button type="button" class="btn_mychat" onclick="btn_mychat()">메모</button>
                 <div class="memo_list d-none">
+                    <div class="memo_list_header">
+                        <button>
+                            <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
+                        </button>
+                    </div>
                     <div class="memo_list_body">
                         <div class="write_memo">
                             <div class="write_memo_i">
@@ -254,11 +259,10 @@
             memo_num = number;
             $(`.memo_list, .memo_textarea, .memo_input${number}`).toggleClass('d-none');
             $('#chat_bar').css({'box-shadow': 'none', 'border-left': '1px solid var(--color-deep)'})
-            $('.offcanvas-header').toggleClass('d-none');
         }
         function memo_off(){
             // console.log(memo_num);
-            $(`.memo_textarea, .memo_list, .memo_input${memo_num}, .offcanvas-header`).toggleClass('d-none');
+            $(`.memo_textarea, .memo_list, .memo_input${memo_num}`).toggleClass('d-none');
             if($(`.memo_input${memo_num}`).val().trim() != "" ){
                 $(`.memo${memo_num} .memo_title`).text($(`.memo_input${memo_num}`).val());
             }else{
@@ -266,7 +270,7 @@
             }
         }
         function btn_mychat (){
-            $('.memo_list, .btn_mychat, .participants_bar').toggleClass('d-none');
+            $('.memo_list, .btn_mychat, .participants_bar, .offcanvas-body_header').toggleClass('d-none');
         }
 
         // 메세지 경과 시간
