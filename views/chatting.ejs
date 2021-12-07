@@ -170,7 +170,8 @@
                 <div class="memo_list d-none">
                     <div class="m_memo_list_header">
                         <button>
-                            <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
+                            <i class="fas fa-chevron-left" onclick="btn_mychat()"></i>
+<!--                            <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>-->
                         </button>
                     </div>
                     <div class="memo_list_body">
@@ -188,7 +189,8 @@
                 <div class="memo_textarea d-none">
                     <div class="m_memo_list_header">
                         <button>
-                            <i class="fas fa-arrow-left" onclick="memo_off()"></i>
+                            <i class="fas fa-chevron-left" onclick="memo_off()"></i>
+                            <!--<i class="fas fa-arrow-left" onclick="memo_off()"></i>-->
                         </button>
                     </div>
                     <div class="memo_each"></div>
@@ -216,9 +218,20 @@
         let vh = window.innerHeight * 0.01
         document.documentElement.style.setProperty('--vh', `${vh}px`)
         window.addEventListener('resize', () => {
-            let vh = window.innerHeight * 0.01
+            vh = window.innerHeight * 0.01
             document.documentElement.style.setProperty('--vh', `${vh}px`)
+            window_width = window.innerWidth;
+            if(window_width < 769){
+                $('.chat_input_1').removeAttr('autofocus');
+            }
         })
+
+        let window_width = window.innerWidth;
+        console.log(window_width);
+
+        if(window_width < 769){
+            $('.chat_input_1').removeAttr('autofocus');
+        }
 
         let memo_num = 0;
         function add_memo(){
@@ -253,7 +266,8 @@
             console.log('삭제됐다');
             del = 'del';
             $(`.memo${number}, .memo_input${number}`).remove();
-            if($('.memo_list_body').children().length == 1){
+            console.log($('.memo_list_body'));
+            if($('.memo_list_body').children().length == 2){
                 $('.write_memo').removeClass('d-none');
             }
         }
