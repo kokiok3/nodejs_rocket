@@ -26,6 +26,10 @@
         body{
             font-family: 'Noto Sans KR', sans-serif;
         }
+        .author {
+            font-style: italic;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -164,7 +168,7 @@
                 </div>
                 <button type="button" class="btn_mychat" onclick="btn_mychat()">메모</button>
                 <div class="memo_list d-none">
-                    <div class="memo_list_header">
+                    <div class="m_memo_list_header">
                         <button>
                             <i class="fas fa-arrow-left" onclick="btn_mychat()"></i>
                         </button>
@@ -182,7 +186,7 @@
                     </div>
                 </div>
                 <div class="memo_textarea d-none">
-                    <div class="memo_list_header">
+                    <div class="m_memo_list_header">
                         <button>
                             <i class="fas fa-arrow-left" onclick="memo_off()"></i>
                         </button>
@@ -221,7 +225,7 @@
             stamp_today();
             memo_num += 1;
             $('.memo_list_body').append(`
-                <div class="memo${memo_num} memo_wrap"  onclick="memo_on(${memo_num})">
+                <div class="memo${memo_num} memo_wrap" id="con" onclick="memo_on(${memo_num})">
                     <button class="memo">
                         <span class="memo_btn">
                             <span class="memo_title">제목 없음</span>
@@ -231,12 +235,17 @@
                     <i class="fas fa-times del_memo" onclick="del_memo(${memo_num})"></i>
                 </div>
             `);
-            $('.memo_each').append(
-                `<div data-editable data-name="main-content" class="memo_input${memo_num} d-none "></div>`
-            )
             // $('.memo_each').append(
-            //     `<textarea name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+            //     `<div data-editable data-name="main-content" id="main-content" class="memo_input${memo_num} d-none ">
+            //         <h2>
+            //             제목
+            //         </h2>
+            //         <p>내용</p>
+            //     </div>`
             // )
+            $('.memo_each').append(
+                `<textarea name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+            )
             $('.write_memo').addClass('d-none');
         }
         let del;
@@ -448,7 +457,6 @@
 
         //채팅창 ctrl+Enter && 보내기 기능
         $('.chat_input_1').on('keydown', about_enter);
-        $('.chat_input_2').on('keydown', about_enter);
         function about_enter(e){
             if(e.isComposing || e.keyCode === 229){
                 return;
@@ -464,11 +472,7 @@
                     return;
                 }else{
                     e.preventDefault();// 원래 enter key를 누르려던 것을 못하게한다.
-                    if($(this)[0].parentNode.previousElementSibling.classList[0] == 'chat_whisper'){
-                        send(e, 1);
-                    }else{
-                        send(e, 2);
-                    }
+                    send(e, 1);
                     writing_zero();
                 }
             }
@@ -844,7 +848,7 @@
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
             }
 
-            $('.chatting_1 .chat_history').append(`<p class='sys'> <span class='${data.socket_id}'>${data.socket_id}</span> 님이 퇴장하셨습니다 </p>`);
+            $('.chatting_1 .chat_history').append(`<p class='sys'> <span class='${data.exit_user}'>${data.exit_user}</span> 님이 퇴장하셨습니다 </p>`);
             $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
 
             //퇴장시 참여자 목록과 인원 && 귓속말
