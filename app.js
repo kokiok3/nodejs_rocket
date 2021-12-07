@@ -17,6 +17,7 @@ app.set('views', __dirname + '/views');
 //static
 app.use('/static', express.static(__dirname + '/static'));
 app.use('/upload', express.static(__dirname + '/upload'));
+app.use('/scripts', express.static(__dirname + '/scripts'));
 
 //mysql
 const conn = mysql.createConnection({
@@ -161,8 +162,10 @@ io.on('connection', function(socket){
     })
 
     socket.on('disconnect', function(){
+        // console.log('나간 유저:', socket.id);
+        let exit_user = user_list.filter(i => i.id == socket.id);
+        exit_user = exit_user[0].user_name;
         user_list = user_list.filter(i => i.id !== socket.id);
-        // console.log('남은 유저:', user_list);
-        io.emit('exit', {socket_id: socket.id, user_list: user_list});
+        io.emit('exit', {socket_id: socket.id, user_list: user_list, exit_user: exit_user});
     });
 });
