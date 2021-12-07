@@ -11,6 +11,76 @@
   --profile-pic-40: 40px;
   /*--vh: 100%;*/
 }
+
+/*contentTools*/
+/* Alignment styles for images, videos and iframes in editable regions */
+
+/* Center (default) */
+[data-editable] iframe,
+[data-editable] image,
+[data-editable] [data-ce-tag=img],
+[data-editable] img,
+[data-editable] video {
+  clear: both;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+/* Left align */
+[data-editable] .align-left {
+  clear: initial;
+  float: left;
+  margin-right: 0.5em;
+}
+
+/* Right align */
+[data-editable].align-right {
+  clear: initial;
+  float: right;
+  margin-left: 0.5em;
+}
+
+/* Alignment styles for text in editable regions */
+[data-editable] .text-center {
+  text-align: center;
+}
+
+[data-editable] .text-left {
+  text-align: left;
+}
+
+[data-editable] .text-right {
+  text-align: right;
+}
+
+/*@font-face {*/
+/*  font-family: 'icon';*/
+/*  src: url('http://cdn.jsdelivr.net/contenttools/1.2.4/icons.woff');*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*}*/
+
+/*.ce-element--drop:before {*/
+/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-vert-above.svg');*/
+/*}*/
+/*.ce-element--drop-left:before,*/
+/*.ce-element--drop-right:before {*/
+/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-horz.svg');*/
+/*}*/
+/*.ce-element--drop.ce-element--type-table-row {*/
+/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-vert-above.svg');*/
+/*}*/
+/*.ce-element--drop.ce-element--type-table-row.ce-element--drop-below {*/
+/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-vert-below.svg');*/
+/*}*/
+
+/*.ce-element--type-video {*/
+/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/video.svg');*/
+/*}*/
+/**/
+
 /* width */
 ::-webkit-scrollbar {
   width: 6px;
@@ -141,10 +211,6 @@ body{
   color: var(--color-far_deeper);
   transition: 0.5s;
 }
-#setting_bar > .setting_custom:hover, .setting_hamburger:hover {
-  /*color: white;*/
-  color: #76beb0;
-}
 #setting_bar .setting_mypic:hover:after {
   content: '현재 프로필 사진';
   top: 73px;
@@ -174,10 +240,6 @@ body{
   color: white;
   font-weight: bold;
 }
-#setting_change:hover {
-  background: rgb(128,221,203);
-  background: linear-gradient(161deg, rgb(111 190 175) 0%, rgb(108 174 161) 94%);
-}
 .m_content1 {
   display: none;
 }
@@ -185,7 +247,7 @@ body{
   /* background: linear-gradient(90deg, #5c657b 0%, #586179 65%); */
   height: calc(100vh - 60px);
   color: var(--color-border);
-  /*   position: relative; */
+  position: relative;
   background: rgb(44,57,71);
   background: linear-gradient(176deg, rgb(54 69 86) 0%, rgba(55,71,88,1) 100%);
 }
@@ -201,11 +263,6 @@ body{
   border: none;
   transition: 0.5s;
 }
-#second_bar .btn_mychat:hover{
-  color: #fff;
-  background: #5f9c91b5;
-  /*background: linear-gradient(161deg, rgb(111 190 175) 0%, rgb(108 174 161) 94%);*/
-}
 /* #second_bar .btn_mychat:hover:before{
   border-bottom: 10px solid var(--color-white);
   border-top: 10px solid transparent;
@@ -220,8 +277,9 @@ body{
 #second_bar .btn_mychat:hover:after{
   content: '메모할 수 있어요!';
   position: absolute;
-  top: 73px;
-  left: 318px;
+  top: 15px;
+  left: 250px;
+  width: 110px;
   z-index: 3;
   margin: calc(2px + var(--padding-10)) 0;
   padding: 10px;
@@ -230,7 +288,7 @@ body{
   box-shadow: 1px 3px 10px rgb(64 69 88 / 50%);
   font-size: 12px;
   font-weight: bold;
-  text-align: left;
+  text-align: center;
   border-radius: 5px;
 }
 #second_bar .memo_list {
@@ -254,10 +312,6 @@ body{
   color: var(--color-deeper);
   transition: 0.3s;
   cursor: pointer;
-}
-.memo_list_header button *:hover,
-.memo_list_footer i:hover {
-  color: #76beb0;
 }
 .memo_list_body {
   height: calc(100vh - 194px);
@@ -297,9 +351,6 @@ body{
   justify-content: center;
   align-items: flex-start;
 }
-.memo_list_body .memo_wrap .memo:hover {
-  background: linear-gradient(176deg, rgb(66 82 100) 0%, rgb(63 81 98) 100%);
-}
 .memo_list_body .memo_wrap .memo:focus {
   box-shadow: 0 10px 20px 0px rgba(45,50,65,0.5);
   z-index: 2;
@@ -321,23 +372,27 @@ body{
   font-size: 14px;
 }
 .memo_list_body .memo_wrap .del_memo{
-  display: none;
-  color:  var(--color-deeper);
+  /*display: none;*/
+  color: var(--color-deeper);
   font-size: 16px;
   position: absolute;
-  top: 20px;
-  right: 33px;
+  top: 7px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  line-height: 20px;
+  text-align: center;
+  padding-inline: 10px;
+  padding-block: 10px;
   transition: 0.3s;
   cursor: pointer;
 }
 .memo_list_body .memo_wrap:hover .del_memo {
   display: block;
 }
-.memo_list_body .memo_wrap .del_memo:hover {
-  color: #76beb0;
-}
 .memo_list_body .memo_wrap .del_memo:hover .memo{
-  background: linear-gradient(176deg, rgb(66 82 100) 0%, rgb(63 81 98) 100%);
+  /*background: linear-gradient(176deg, rgb(66 82 100) 0%, rgb(63 81 98) 100%);*/
+  background-color: red;
 }
 .memo_list .memo_list_footer {
   width: 100%;
@@ -391,11 +446,6 @@ body{
   padding: 6px;
   transition: 0.5s;
   border-radius: 10px;
-}
-.participants_bar .participants_name:hover {
-  background-color: rgba(73, 80, 99, 1);
-  border-radius: 10px;
-  padding: 6px 0;
 }
 .participants_bar .participants_name > * {
   margin: 0 4px;
@@ -505,9 +555,9 @@ body{
   /* width: 100%; */
   margin: calc(var(--margin-2) + 10px) 0;
 }
-.my_whisper,
+.my_msg.my_whisper,
 .whisper_msg {
-  color: blue;
+  color: rgb(128,221,203);
 }
 .whisper_msg,
 .new_msg {
@@ -516,6 +566,10 @@ body{
   justify-content: flex-start;
   text-align: left;
   margin: calc(var(--margin-2) + 10px) 0;
+}
+.my_whisper .msg_content .msg_txt,
+.whisper_msg .msg_content .msg_txt{
+  color: white;
 }
 .msg_profile_pic {
   margin: 5px;
@@ -564,17 +618,12 @@ body{
   transform: rotate(90deg);
   top: -5px;
   right: 0px;
-  /*z-index: -1;*/
+  z-index: -1;
 }
 .my_msg .msg_nameNtime {
   display: flex;
   justify-content: flex-end;
   align-items: baseline;
-}
-.my_msg:hover,
-.whisper_msg:hover,
-.new_msg:hover {
-  background-color: var(--color-light);
 }
 .whisper_msg .msg_content,
 .new_msg .msg_content {
@@ -638,10 +687,6 @@ body{
 }
 .chat_whisper > #whisper >.whisper_op{
   padding: var(--padding-10);
-}
-.chat_whisper > #whisper > .whisper_op:hover{
-  width: 100%;
-  background-color: var(--color-deeper);
 }
 .writing {
   display: flex;
@@ -751,12 +796,8 @@ body{
   font-weight: bold;
   transition: 0.3s;
 }
-.chat_editor .btn_whisper:hover,
-.chat_editor btn_send_img:hover {
-  color: #76beb0;
-}
 .chat_editor .btn_whisper:hover:after {
-  content: '귓속말';
+  content: '귓속말 (참여자 3인 이상부터 가능)';
   box-shadow: 1px 3px 10px rgb(64 69 88 / 50%);
   position: absolute;
   top: -40px;
@@ -804,9 +845,60 @@ body{
   min-width: 205px;
   height: 30px;
 }
-@media screen and (max-width: 375px){
-  #offcanvasRight{
-    border: none;
+@media (hover: hover) {
+  #setting_bar > .setting_custom:hover, .setting_hamburger:hover {
+    /*color: white;*/
+    color: #76beb0;
+  }
+  #setting_change:hover {
+    background: rgb(128,221,203);
+    background: linear-gradient(161deg, rgb(111 190 175) 0%, rgb(108 174 161) 94%);
+  }
+  #second_bar .btn_mychat:hover{
+    color: #fff;
+    background: #5f9c91b5;
+    /*background: linear-gradient(161deg, rgb(111 190 175) 0%, rgb(108 174 161) 94%);*/
+  }
+  .memo_list_header button *:hover,
+  .memo_list_footer i:hover {
+    color: #76beb0;
+  }
+  .memo_list_body .memo_wrap .memo:hover {
+    background: linear-gradient(176deg, rgb(66 82 100) 0%, rgb(63 81 98) 100%);
+  }
+  .memo_list_body .memo_wrap .del_memo:hover {
+    color: #76beb0;
+  }
+  .participants_bar .participants_name:hover {
+    background-color: rgba(73, 80, 99, 1);
+    border-radius: 10px;
+    padding: 6px 0;
+  }
+  .my_msg:hover,
+  .whisper_msg:hover,
+  .new_msg:hover {
+    background-color: var(--color-light);
+  }
+  .chat_whisper > #whisper > .whisper_op:hover{
+    width: 100%;
+    background-color: var(--color-deeper);
+  }
+  .chat_editor .btn_whisper:hover,
+  .chat_editor btn_send_img:hover {
+    color: #76beb0;
+  }
+}
+@media screen and (max-width: 1440px) {
+  .my_msg .msg_txt,
+  .whisper_msg .msg_txt,
+  .new_msg .msg_txt {
+    max-width: 400px;
+    font-size: 14px;
+  }
+}
+@media screen and (min-width: 769px) {
+  .m_hamburger_setting_bar, .setting_hamburger, .chat_name {
+    display: none;
   }
 }
 @media screen and (max-width: 768px){
@@ -864,8 +956,30 @@ body{
   .content2 #setting_bar .m_content1 .setting_hamburger {
     border: none;
   }
+  #chat_name {
+    padding-bottom: var(--padding-10);
+    height: 30px;
+  }
   .chatting_1 {
     height: calc((var(--vh, 1vh) * 100) - 120px);
+  }
+  .chat_history {
+    padding: var(--padding-10) 0px;
+  }
+  .my_msg .msg_txt,
+  .whisper_msg .msg_txt,
+  .new_msg .msg_txt {
+    max-width: 300px;
+    font-size: 14px;
+  }
+  .chat_editor .btn_whisper {
+    background-color: transparent;
+    border: none;
+    /*border-right: 3px solid var(--color-deeper);*/
+    color: var(--color-far_deeper);
+    font-weight: bold;
+    transition: 0.3s;
+    padding-left: 10px;
   }
   .chat_footer {
     /*width: 100%;*/
@@ -886,8 +1000,8 @@ body{
   .chat_footer .chat_editor .chat_input_1 {
     background-color: var(--color-light);
     height: 30px;
+    margin-left: 0;
   }
-
   .chat_footer .chat_editor .send_btn {
     background-color: transparent;
     border: none;
@@ -922,18 +1036,20 @@ body{
   .participants_user_name {
     color: var(--color-border);
   }
-  #offcanvasRight > .offcanvas-body .offcanvas-body_header  {
+  #offcanvasRight > .offcanvas-body .offcanvas-body_header,
+  #offcanvasRight > .offcanvas-body .m_memo_list_header  {
     padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  #offcanvasRight > .offcanvas-body .offcanvas-body_header > * {
+  #offcanvasRight > .offcanvas-body .offcanvas-body_header > *,
+  #offcanvasRight > .offcanvas-body .m_memo_list_header > *{
     color: var(--color-far_deeper);
     font-size: 25px;
   }
   #offcanvasRight > .offcanvas-body .offcanvas-body_header,
-  #offcanvasRight > .offcanvas-body .memo_list_header {
+  #offcanvasRight > .offcanvas-body .m_memo_list_header {
     height: 70px;
   }
   #offcanvasRight > .offcanvas-body .memo_list_body {
@@ -944,6 +1060,9 @@ body{
   }
   #offcanvasRight > .offcanvas-body .memo_list_body .write_memo {
     height: calc((var(--vh, 1vh) * 100) - 140px);
+  }
+  #offcanvasRight > .offcanvas-body .memo_list_body .memo_wrap .del_memo {
+    display: block;
   }
   #offcanvasRight > .offcanvas-body .memo_list_footer {
     height: 70px;
@@ -956,8 +1075,26 @@ body{
     height: calc((var(--vh, 1vh) * 100) - 70px);
   }
 }
-@media screen and (min-width: 769px) {
-  .m_hamburger_setting_bar, .setting_hamburger, .chat_name {
-    display: none;
+@media screen and (max-width: 425px){
+  .msg_name {
+    font-size: 14px;
   }
+  .my_msg .msg_txt,
+  .whisper_msg .msg_txt,
+  .new_msg .msg_txt {
+    max-width: 250px;
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 375px){
+  #offcanvasRight{
+    border: none;
+  }
+  .my_msg .msg_txt,
+  .whisper_msg .msg_txt,
+  .new_msg .msg_txt {
+    max-width: 200px;
+  }
+}
+@media screen and (max-width: 320px){
 }
