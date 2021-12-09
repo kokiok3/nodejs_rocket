@@ -17,7 +17,8 @@ app.set('views', __dirname + '/views');
 //static
 app.use('/static', express.static(__dirname + '/static'));
 app.use('/upload', express.static(__dirname + '/upload'));
-app.use('/scripts', express.static(__dirname + '/scripts'));
+app.use('/assets', express.static(__dirname + '/assets'));
+// console.log(__dirname);
 
 //mysql
 const conn = mysql.createConnection({

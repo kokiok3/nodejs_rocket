@@ -12,7 +12,7 @@
   /*--vh: 100%;*/
 }
 
-/*contentTools*/
+/*ContentTools*/
 /* Alignment styles for images, videos and iframes in editable regions */
 
 /* Center (default) */
@@ -54,32 +54,10 @@
 [data-editable] .text-right {
   text-align: right;
 }
-
-/*@font-face {*/
-/*  font-family: 'icon';*/
-/*  src: url('http://cdn.jsdelivr.net/contenttools/1.2.4/icons.woff');*/
-/*  font-weight: normal;*/
-/*  font-style: normal;*/
-/*}*/
-
-/*.ce-element--drop:before {*/
-/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-vert-above.svg');*/
-/*}*/
-/*.ce-element--drop-left:before,*/
-/*.ce-element--drop-right:before {*/
-/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-horz.svg');*/
-/*}*/
-/*.ce-element--drop.ce-element--type-table-row {*/
-/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-vert-above.svg');*/
-/*}*/
-/*.ce-element--drop.ce-element--type-table-row.ce-element--drop-below {*/
-/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/drop-vert-below.svg');*/
-/*}*/
-
-/*.ce-element--type-video {*/
-/*  background-image: url('http://cdn.jsdelivr.net/contenttools/1.2.4/images/video.svg');*/
-/*}*/
-/**/
+div.ct-app {
+  display: none;
+}
+/*ContentTools done*/
 
 /* width */
 ::-webkit-scrollbar {
@@ -410,17 +388,44 @@ body{
 .memo_textarea .memo_each {
   height: calc(100vh - 124px);
   padding: 15px;
+  padding-top: 0;
   background-color: white;
 }
 .memo_textarea .memo_each > * {
-  width: 100%;
   height: 100%;
   border: none;
-  overflow-y: auto;
   resize: none;
 }
-.memo_textarea .memo_each > *:focus {
-  outline: none;
+.memo_input {
+  width: 100%;
+  color: black;
+  height: calc(100vh - 212px);
+  overflow-y: auto;
+}
+.memo_input > * {
+  max-width: 220px;
+}
+body > div.ct-app > div.ct-widget.ct-ignition.ct-ignition--ready.ct-widget--active {
+  position: absolute;
+  top: 681px;
+  left: 83px;
+}
+body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--confirm {
+  position: absolute;
+  top: 665px;
+  left: 67px;
+}
+body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--cancel {
+  position: absolute;
+  top: 665px;
+  left: 125px;
+}
+body > div.ct-app > div.ct-widget.ct-inspector.ct-widget--active {
+  display: none;
+  /*position: absolute;*/
+  /*top: 643px;*/
+  /*left: 68px;*/
+  /*width: 250px;*/
 }
 .participants_bar {
   padding: var(--padding-10);
@@ -945,6 +950,39 @@ body{
     text-align: center;
     color: #76beb0;
     transform: rotate(330deg);
+  }
+  body > div.ct-app > div.ct-widget.ct-ignition.ct-ignition--ready.ct-widget--active {
+    position: absolute;
+    top: calc((var(--vh, 1vh) * 100) - 63px);
+     left: 10px;
+  }
+  body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--confirm {
+    position: absolute;
+    top: calc((var(--vh, 1vh) * 100) - 79px);
+    left: -6px;
+  }
+  body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--cancel {
+    position: absolute;
+    top: calc((var(--vh, 1vh) * 100) - 79px);
+    left: 52px;
+  }
+  /*#offcanvasRight > div > div.memo_textarea > div.memo_each > div.memo_input {*/
+  /*  width*/
+  /*}*/
+  body > div.ct-app > div > div.ct-widget.ct-toolbox.ct-widget--active {
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    left: 182px;
+    top: 70px;
+    width: 90px;
+    height: calc((var(--vh, 1vh) * 100) - 70px);
+    padding: 4px;
+  }
+  body > div.ct-app > div.ct-widget.ct-toolbox.ct-widget--active > div.ct-toolbox__grip.ct-grip {
+    display: none;
+  }
+  body > div.ct-app > div.ct-widget.ct-toolbox.ct-widget--active > div.ct-tool-groups {
+    padding: 0;!important;
   }
   .content2 #setting_bar .m_content1 .content1_name {
     font-size: 20px;

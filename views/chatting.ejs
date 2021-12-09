@@ -18,17 +18,12 @@
     <link rel="icon" href="../static/favicon/rocket1.ico" type="image/x-icon" sizes="16x16">
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <!--    메모장-->
-    <link rel="stylesheet" type="text/css" href="../scripts/content-tools.min.css">
-    <script src="../scripts/content-tools.min.js"></script>
-    <script src="../scripts/editor.js"><S/script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/content-tools.min.css">
+    <script src="assets/content-tools.min.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>-->
     <style>
         body{
             font-family: 'Noto Sans KR', sans-serif;
-        }
-        .author {
-            font-style: italic;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -107,7 +102,10 @@
                         <i class="fas fa-arrow-left" onclick="memo_off()"></i>
                     </button>
                 </div>
-                <div class="memo_each"></div>
+                <div class="memo_each">
+                    <div data-editable data-name="main-content" class="d-none">
+                    </div>
+                </div>
             </div>
             <!-- 참여자 -->
             <div class="participants_bar">
@@ -190,10 +188,12 @@
                     <div class="m_memo_list_header">
                         <button>
                             <i class="fas fa-chevron-left" onclick="memo_off()"></i>
-                            <!--<i class="fas fa-arrow-left" onclick="memo_off()"></i>-->
                         </button>
                     </div>
-                    <div class="memo_each"></div>
+                    <div class="memo_each">
+<!--                        <div data-editable data-name="main-content" class="d-none">-->
+<!--                        </div>-->
+                    </div>
                 </div>
                 <!-- 참여자 -->
                 <div class="participants_bar">
@@ -208,12 +208,6 @@
         </div>
     </div>
     <script>
-        //이미지전송
-        // $('.btn_send_img').click(function(){$('input[name=btn_send_img]').trigger('click');});
-        // function btn_send_img(){
-        //
-        // }
-
         //css mobile vh issue
         let vh = window.innerHeight * 0.01
         document.documentElement.style.setProperty('--vh', `${vh}px`)
@@ -227,13 +221,20 @@
         })
 
         let window_width = window.innerWidth;
-        console.log(window_width);
-
         if(window_width < 769){
             $('.chat_input_1').removeAttr('autofocus');
         }
 
+        //contentTools import
+        let editor = ContentTools.EditorApp.get();
+        editor.init('*[data-editable]', 'data-name');
+        
+        //메모장
         let memo_num = 0;
+        $('body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--confirm,' +
+            'body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--cancel').click(function(){
+            $('.memo_input').removeClass('ce-element ce-element--type-text');
+        })
         function add_memo(){
             stamp_today();
             memo_num += 1;
@@ -248,17 +249,14 @@
                     <i class="fas fa-times del_memo" onclick="del_memo(${memo_num})"></i>
                 </div>
             `);
-            // $('.memo_each').append(
-            //     `<div data-editable data-name="main-content" id="main-content" class="memo_input${memo_num} d-none ">
-            //         <h2>
-            //             제목
-            //         </h2>
-            //         <p>내용</p>
-            //     </div>`
-            // )
-            $('.memo_each').append(
-                `<textarea name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+            $('#second_bar > div.memo_textarea.d-none > div.memo_each').append(
+                `<div data-editable data-name="main-content" class="memo_input memo_input${memo_num} d-none ">
+                    <h1></h1>
+                </div>`
             )
+            // $('.memo_each').append(
+            //     `<textarea name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
+            // )
             $('.write_memo').addClass('d-none');
         }
         let del;
@@ -282,14 +280,22 @@
             memo_num = number;
             $(`.memo_list, .memo_textarea, .memo_input${number}`).toggleClass('d-none');
             $('#chat_bar').css({'box-shadow': 'none', 'border-left': '1px solid var(--color-deep)'})
+            $(' .ct-app').css({'display': 'block'})
         }
         function memo_off(){
             // console.log(memo_num);
-            $(`.memo_textarea, .memo_list, .memo_input${memo_num}`).toggleClass('d-none');
-            if($(`.memo_input${memo_num}`).val().trim() != "" ){
-                $(`.memo${memo_num} .memo_title`).text($(`.memo_input${memo_num}`).val());
+            console.log($(`.memo_input${memo_num}`)[0].firstChild);
+            console.log($(`.memo_input${memo_num}`)[0].firstChild.innerText);
+            if($('div.ct-app').children().length == 1){
+                $(`.memo_textarea, .memo_list, .memo_input${memo_num}`).toggleClass('d-none');
+                $(' .ct-app').css({'display': 'none'})
+                if($(`.memo_input${memo_num}`)[0].firstChild.innerText.trim() == "" ){
+                    $(`.memo${memo_num} .memo_title`).text('제목 없음');
+                }else{
+                    $(`.memo${memo_num} .memo_title`).text($(`.memo_input${memo_num}`)[0].firstChild.innerText);
+                }
             }else{
-                $(`.memo${memo_num} .memo_title`).text('제목 없음');
+                alert('메모작성을 완료해주세요');
             }
         }
         function btn_mychat (){
