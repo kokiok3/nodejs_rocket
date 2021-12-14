@@ -442,7 +442,7 @@ body > div.ct-app > div.ct-widget.ct-inspector.ct-widget--active {
   margin: calc(2px + var(--margin-2));
 }
 .participants_bar .participants {
-  height: 300px;
+  max-height: calc(100vh - 200px);
   overflow-y: auto;
 }
 .participants_bar .participants_name{
@@ -975,7 +975,7 @@ body > div.ct-app > div.ct-widget.ct-inspector.ct-widget--active {
   body > div.ct-app > div.ct-widget.ct-ignition.ct-ignition--ready.ct-widget--active {
     position: absolute;
     top: calc((var(--vh, 1vh) * 100) - 63px);
-     left: 10px;
+    left: 10px;
   }
   body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--confirm {
     position: absolute;
