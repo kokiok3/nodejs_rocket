@@ -775,6 +775,7 @@ body > div.ct-app > div.ct-widget.ct-inspector.ct-widget--active {
   border-radius: 10px;
   padding: var(--padding-10);
   margin: var(--padding-10) auto;
+  margin-bottom: 30px;
   background-color: white;
   box-shadow: 1px 3px 10px #8b8b8b52;
   position: relative;
@@ -891,6 +892,26 @@ body > div.ct-app > div.ct-widget.ct-inspector.ct-widget--active {
   .chat_editor .btn_whisper:hover,
   .chat_editor btn_send_img:hover {
     color: #76beb0;
+  }
+}
+@media screen and (min-width: 2560px) {
+  .chat_editor {
+    width: 1000px;
+    margin-bottom: 80px;
+  }
+  .my_msg .msg_txt,
+  .whisper_msg .msg_txt,
+  .new_msg .msg_txt {
+    max-width: 500px;
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 2559px) {
+  .my_msg .msg_txt,
+  .whisper_msg .msg_txt,
+  .new_msg .msg_txt {
+    max-width: 400px;
+    font-size: 14px;
   }
 }
 @media screen and (max-width: 1440px) {
