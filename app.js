@@ -27,7 +27,7 @@ const conn = mysql.createConnection({
     // database: 'rocket_chat'
 });
 
-//get and post
+//get and postㄹ
 http.listen(port, ()=>{
     conn.connect((err)=>{
         if(err) console.log(err);
@@ -57,9 +57,7 @@ let storage = multer.diskStorage({
 let upload_multer = multer({storage: storage});
 
 app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
-    // console.log('요청바디: ', req);
-    // console.log('응답: ', res);
-    // console.log('바디: ', req.file);
+    console.log('바디: ', req.file);
 
     //rename_filename
     fs_rename = 'upload/' +Date.now() + '_' + req.file.originalname
@@ -137,6 +135,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('change_profile_pic', (data)=>{
+        console.log('hihi')
         io.emit('change_profile_pic', {
             profile: data,
             profile_pic: fs_rename

@@ -594,15 +594,12 @@
         }
         //유저이름 유효성 확인
         function check_user_name(e){
-            // console.log($('input[name=user_name]').val().trim());
-            // console.log($(`.participants_name.${userName}`)[0].innerText.trim());
             if($('input[name=user_name]').val().trim() == ''){
-                // console.log('닉네임을 입력해줘');
+                //닉네임 값이 없을경우
                 $('#user_name').val(userName);
                 e.preventDefault(); //form전송 방지
+            }else if($('input[name=user_name]').val().trim() == $(`.participants_name.${userName} .participants_user_name`)[0].innerText.trim()){
                 //닉네임이 기존과 같을 경우
-            }else if($('input[name=user_name]').val().trim() == $(`.participants_name.${userName}`)[0].innerText.trim()){
-                console.log('닉네임을 똑같애');
                 e.preventDefault(); //form전송 방지
                 if($('#image_upload').val() != ''){
                     change_profile_pic(e);
@@ -610,7 +607,7 @@
                 $('.modal_close').trigger('click');
             }
             else{
-                // console.log('닉네임 바꿀거야')
+                //닉네임 바꿀 경우
                 e.preventDefault(); //form전송 방지
                 $('.modal_close').trigger('click');
                 return 'go_next';
@@ -618,6 +615,7 @@
         }
         //유저 이미지 업로드
         function change_profile_pic(){
+            console.log('change profile');
             let form_data;
             form_data = new FormData($('#form_data')[0]);
             form_data.append('socket_id', socketId);
@@ -856,6 +854,7 @@
         //프사 변경: 모두적용
         socket.on('change_profile_pic', (data)=>{
             //프사 변경
+            console.log('프사바뀜')
             $(`.setting_mypic.${data.profile.user_name}, .participants_name.${data.profile.user_name} .participants_user_pic, .${data.profile.user_name} .msg_profile_pic`).css({'background-image': `url(../${data.profile_pic})`});
             $(`.setting_mypic.${data.profile.user_name}  img, .participants_name.${data.profile.user_name} .participants_user_pic > img,  .${data.profile.user_name} .msg_profile_pic img`).addClass('d-none');
 
