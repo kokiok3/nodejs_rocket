@@ -228,7 +228,7 @@
         //contentTools import
         let editor = ContentTools.EditorApp.get();
         editor.init('*[data-editable]', 'data-name');
-        
+
         //메모장
         let memo_num = 0;
         $('body > div.ct-app > div > div.ct-ignition__button.ct-ignition__button--confirm,' +
@@ -726,7 +726,7 @@
         });
 
         socket.on('elapse_time', (data)=>{
-            console.log(data)
+            // console.log(data)
             let data_elapse_time;
             if(data < 60000){ // 1분 미만
                 data_elapse_time = data / 1000;

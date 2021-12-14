@@ -59,7 +59,7 @@ let upload_multer = multer({storage: storage});
 app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
     // console.log('요청바디: ', req);
     // console.log('응답: ', res);
-    console.log('바디: ', req.file);
+    // console.log('바디: ', req.file);
 
     //rename_filename
     fs_rename = 'upload/' +Date.now() + '_' + req.file.originalname
@@ -71,7 +71,7 @@ app.post('/file_upload', upload_multer.single('image_upload'), (req,res)=>{
         // console.log(user_list[key].id == req.body.socket_id);
         if(user_list[key].id == req.body.socket_id){
             user_list[key].profile_pic = fs_rename;
-            console.log('바꾸기후', fs_rename);
+            // console.log('바꾸기후', fs_rename);
             // console.log('profile picture add:', user_list);
             break;
         };
@@ -129,7 +129,7 @@ io.on('connection', function(socket){
             }
         }
         socket.emit('change_user_name', {profile: data});
-            console.log(data);
+            // console.log(data);
         io.emit('change_user_name_all', {
             profile: data,
             before_user_name: before_user_name,
@@ -153,12 +153,12 @@ io.on('connection', function(socket){
     socket.on('send', (data)=>{
         // console.log(`내용${msg}, 메세지 보낸 사람은 ${socket.id}`);
         io.emit('new_msg',{socket_id: socket.id, user_info: data, whisper: whisper_to});
-        console.log('userInfo: ', data);
+        // console.log('userInfo: ', data);
         whisper_to = undefined;
     });
 
     socket.on('whisper', (whisper)=>{
-        console.log('whisper_op:', whisper);
+        // console.log('whisper_op:', whisper);
         whisper_to = whisper;// new_msg를 통해 전달되는 변수
     })
 
