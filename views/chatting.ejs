@@ -261,10 +261,8 @@
         }
         let del;
         function del_memo(number){
-            console.log('삭제됐다');
             del = 'del';
             $(`.memo${number}, .memo_input${number}`).remove();
-            console.log($('.memo_list_body'));
             if($('.memo_list_body').children().length == 2){
                 $('.write_memo').removeClass('d-none');
             }
@@ -276,16 +274,12 @@
                 del = undefined;
                 return;
             }
-            console.log('메모켜짐');
             memo_num = number;
             $(`.memo_list, .memo_textarea, .memo_input${number}`).toggleClass('d-none');
             $('#chat_bar').css({'box-shadow': 'none', 'border-left': '1px solid var(--color-deep)'})
             $(' .ct-app').css({'display': 'block'})
         }
         function memo_off(){
-            // console.log(memo_num);
-            console.log($(`.memo_input${memo_num}`)[0].firstChild);
-            console.log($(`.memo_input${memo_num}`)[0].firstChild.innerText);
             if($('div.ct-app').children().length == 1){
                 $(`.memo_textarea, .memo_list, .memo_input${memo_num}`).toggleClass('d-none');
                 $(' .ct-app').css({'display': 'none'})
@@ -303,36 +297,37 @@
         }
 
         // 메세지 경과 시간
-        let last_msg_time;
-        let now_time;
-        let elapse_time
-        let elapse = setInterval(function elapse(){
-            if(last_msg_time != undefined){
-                what_time_now();
-                last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
-                now_time = new Date(now_year, now_month-1, now_date, now_hour, now_minute, now_second);
-                elapse_time = now_time - last_msg_time;
-                socket.emit('elapse_time', elapse_time)
-            }
-        }, 10000);
+        // let last_msg_time;
+        // let now_time;
+        // let elapse_time
+        // let elapse = setInterval(function elapse(){
+        //     if(last_msg_time != undefined){
+        //         what_time_now();
+        //         last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
+        //         now_time = new Date(now_year, now_month-1, now_date, now_hour, now_minute, now_second);
+        //         elapse_time = now_time - last_msg_time;
+        //         socket.emit('elapse_time', elapse_time);
+        //     }
+        // }, 10000);
 
         //오늘날짜와 시간 변수
-        let new_now_date;
-        let now_year;
-        let now_month;
-        let now_date;
-        let now_hour;
-        let now_minute;
-        let now_second;
-        function what_time_now(){
-            new_now_date = new Date();
-            now_year = new_now_date.getFullYear();
-            now_month = new_now_date.getMonth()+1;
-            now_date = new_now_date.getDate();
-            now_hour = new_now_date.getHours();
-            now_minute = new_now_date.getMinutes();
-            now_second = new_now_date.getSeconds();
-        }
+        // let new_now_date;
+        // let now_year;
+        // let now_month;
+        // let now_date;
+        // let now_hour;
+        // let now_minute;
+        // let now_second;
+        // function what_time_now(){
+        //     console.log('10초지남');
+        //     new_now_date = new Date();
+        //     now_year = new_now_date.getFullYear();
+        //     now_month = new_now_date.getMonth()+1;
+        //     now_date = new_now_date.getDate();
+        //     now_hour = new_now_date.getHours();
+        //     now_minute = new_now_date.getMinutes();
+        //     now_second = new_now_date.getSeconds();
+        // }
 
         //메세지 보낸 날짜와 시간 변수
         let new_stamp_date;
@@ -359,6 +354,7 @@
         }
 
         //시간 생성
+        let last_msg_time;
         function stamp_time(){
             new_stamp_date = new Date();
             stamp_year = new_stamp_date.getFullYear();
@@ -368,6 +364,14 @@
             stamp_minute = new_stamp_date.getMinutes();
             stamp_second = new_stamp_date.getSeconds();
             last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
+            socket.emit('elapse_time', {
+                stamp_year: stamp_year,
+                stamp_month: stamp_month,
+                stamp_date: stamp_date,
+                stamp_hour: stamp_hour,
+                stamp_minute: stamp_minute,
+                stamp_second: stamp_second
+            });
             if(stamp_minute < 10){
                 stamp_minute = `0${stamp_minute}`;
             }
@@ -481,7 +485,6 @@
             if(e.isComposing || e.keyCode === 229){
                 return;
             }else if(e.ctrlKey && e.code == 'Enter'){
-                console.log(e);
                 let caret = e.target.selectionStart;
                 e.target.setRangeText("\n", caret, caret, "end");
             }
@@ -500,15 +503,16 @@
 
         //채팅에서 링크를 하이퍼링크로 만들기
         const urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        let url_exist;
         function linkify(text) {
             return text.replace(urlRegex, function(url) {
+                url_exist = 'url_exist';
                 return '<a href="' + url + '" target="_blank">' + url + '</a>';
             });
         }
 
         //채팅 보내기
         function send(e, mode){
-            // console.log($(`.chat_input_${mode}`));
             if($(`.chat_input_${mode}`).val().trim() == ''){
                 // alert('메세지입력해줘');
                 e.preventDefault();
@@ -544,7 +548,11 @@
                 msg_content.classList.add('msg_content');
                 msg_nameNtime.classList.add('msg_nameNtime');
                 msg_txt.classList.add('msg_txt');
-                msg_txt.innerHTML = msg_txt_text;
+                if(url_exist == 'url_exist'){
+                    msg_txt.innerHTML = msg_txt_text;
+                }else {
+                    msg_txt.innerText = msg_txt_text;
+                }
                 msg_name.innerText = userName;
                 msg_time.innerText = what_time;
                 msg_name.classList.add('msg_name');
@@ -560,9 +568,11 @@
                     random_profile_number: random_profile_number,
                     random_profile_color: random_profile_color,
                     msg: $(`.chat_input_${mode}`).val(),
-                    what_time: what_time
+                    what_time: what_time,
+                    url_exist: url_exist
                 });
                 $(`.chat_input_${mode}`).val('');
+                url_exist = undefined;
                 $(`.chatting_${mode} .chat_back`).scrollTop($(`.chatting_${mode} .chat_history`).height());
                 $(`.chat_input_${mode}`).focus();
                 if($('#whisper').hasClass('d-none') == false){
@@ -615,7 +625,6 @@
         }
         //유저 이미지 업로드
         function change_profile_pic(){
-            console.log('change profile');
             let form_data;
             form_data = new FormData($('#form_data')[0]);
             form_data.append('socket_id', socketId);
@@ -636,7 +645,6 @@
                 },
                 error: function(err){
                     alert('실패: ' + err.statusText);
-                    console.log(err);
                 }
             });
         }
@@ -681,8 +689,6 @@
 
         socket.on('enter', (data)=>{
             // 오늘날짜 생성
-            // console.log($(`.${today_for_class}`)[0]);
-            // console.log(today_for_class);
             if($(`.${today_for_class}`)[0] == undefined){
                 stamp_today();
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
@@ -696,25 +702,33 @@
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
-                if(data.user_list[key].id == socketId){
+                if(data.user_list[key].id == socketId) {
                     $('.participants').prepend(`
-                    <div class='participants_name ${data.user_list[key].user_name}'>
-                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
-                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
-                        </div>
-                        <span class='participants_me'> me </span>
-                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
-                    </div>`
+                        <div class='participants_name ${data.user_list[key].user_name}'>
+                            <div class='participants_user_pic'></div>
+                            <span class='participants_me'> me </span>
+                            <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                        </div>`
                     );
-                }else{
+                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
+                    }else {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-image': `url(../${data.user_list[key].profile_pic})`});
+                    }
+                }else {
                     $('.participants').append(`
-                    <div class='participants_name ${data.user_list[key].user_name}'>
-                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
-                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
-                        </div>
-                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
-                    </div>`
+                        <div class='participants_name ${data.user_list[key].user_name}'>
+                            <div class='participants_user_pic'></div>
+                            <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                        </div>`
                     );
+                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
+                    }else {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-image': `url(../${data.user_list[key].profile_pic})`});
+                    }
                 }
                 if(socketId != data.user_list[key].id) {
                     $('#whisper').append(`<option class='whisper_op ${data.user_list[key].user_name}' value="${data.user_list[key].user_name}"> ${data.user_list[key].user_name} </option>`);
@@ -724,7 +738,7 @@
         });
 
         socket.on('elapse_time', (data)=>{
-            // console.log(data)
+            // console.log(data);
             let data_elapse_time;
             if(data < 60000){ // 1분 미만
                 data_elapse_time = data / 1000;
@@ -746,7 +760,6 @@
         });
 
         socket.on('stop_elapse_time', ()=>{
-            clearInterval(elapse);
             $('.elapse_time').addClass('elapse_opacity');
         })
 
@@ -761,13 +774,11 @@
         })
 
         socket.on('new_msg', (data)=>{
-            // console.log(`메세지 보낸사람은 ${data.socket_id} 나의 아이디는 ${socketId}`)
             // 오늘날짜 생성
             if($(`.${today_for_class}`)[0] == undefined){
                 stamp_today();
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
             }
-            const msg_txt_text = linkify(data.user_info.msg);
             const msg_wrapper = document.createElement('div');
             const msg_profile_pic = document.createElement('div');
             const msg_content = document.createElement('div');
@@ -797,6 +808,11 @@
                     msg_time.innerText = data.user_info.what_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
+                    if(data.user_info.url_exist == 'url_exist'){
+                        msg_txt.innerHTML = linkify(data.user_info.msg);
+                    }else {
+                        msg_txt.innerText = data.user_info.msg;
+                    }
                     msg_txt.innerHTML = msg_txt_text;
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
@@ -826,7 +842,11 @@
                     msg_time.innerText = data.user_info.what_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    msg_txt.innerHTML = msg_txt_text;
+                    if(data.user_info.url_exist == 'url_exist'){
+                        msg_txt.innerHTML = linkify(data.user_info.msg);
+                    }else {
+                        msg_txt.innerText = data.user_info.msg;
+                    }
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
                     msg_wrapper.append(msg_profile_pic, msg_content);
@@ -854,7 +874,7 @@
         //프사 변경: 모두적용
         socket.on('change_profile_pic', (data)=>{
             //프사 변경
-            console.log('프사바뀜')
+            $(`.participants_name.${data.profile.user_name} .participants_user_pic`).css({'background-color': ''});
             $(`.setting_mypic.${data.profile.user_name}, .participants_name.${data.profile.user_name} .participants_user_pic, .${data.profile.user_name} .msg_profile_pic`).css({'background-image': `url(../${data.profile_pic})`});
             $(`.setting_mypic.${data.profile.user_name}  img, .participants_name.${data.profile.user_name} .participants_user_pic > img,  .${data.profile.user_name} .msg_profile_pic img`).addClass('d-none');
 
@@ -874,26 +894,33 @@
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
-                // console.log(data.user_list[key]);
-                if(data.user_list[key].id == socketId){
+                if(data.user_list[key].id == socketId) {
                     $('.participants').prepend(`
-                    <div class='participants_name ${data.user_list[key].user_name}'>
-                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
-                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
-                        </div>
-                        <div class='participants_me'> me </div>
-                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
-                    </div>`
+                        <div class='participants_name ${data.user_list[key].user_name}'>
+                            <div class='participants_user_pic'></div>
+                            <span class='participants_me'> me </span>
+                            <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                        </div>`
                     );
-                }else{
+                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
+                    }else {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-image': `url(../${data.user_list[key].profile_pic})`});
+                    }
+                }else {
                     $('.participants').append(`
-                    <div class='participants_name ${data.user_list[key].user_name}'>
-                        <div class='participants_user_pic' style='background-color: ${data.user_list[key].random_rgb}'>
-                            <img src="../static/image/image (${data.user_list[key].random_profile_num}).png">
-                        </div>
-                        <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
-                    </div>`
+                        <div class='participants_name ${data.user_list[key].user_name}'>
+                            <div class='participants_user_pic'></div>
+                            <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
+                        </div>`
                     );
+                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                        $(`.participants_name.${data.user_list[key].id} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
+                    }else {
+                        $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-image': `url(../${data.user_list[key].profile_pic})`});
+                    }
                 }
                 $('.participants_number').text(data.user_list.length + '명');
                 if(socketId != data.user_list[key].id){
@@ -903,7 +930,7 @@
                 //참여자 인원이 1명일때 elapse 기능 해제
                 let participants_number = data.user_list.length;
                 if(participants_number == 1){
-                    socket.emit('stop_elapse_time');
+                    socket.emit('elapse_time', 'stop_elapse_time');
                 }
             }
         });
