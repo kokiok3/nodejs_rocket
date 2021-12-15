@@ -596,6 +596,8 @@ body > div.ct-app > div.ct-widget.ct-inspector.ct-widget--active {
 .my_msg .msg_content {
   /*width: 90%;*/
   margin-right: 10px;
+  position: relative;
+  z-index: 1;
 }
 .my_msg .msg_txt {
   text-align: right;
