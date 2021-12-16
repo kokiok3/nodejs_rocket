@@ -90,6 +90,19 @@ class User{
             + ')';
     }
 }
+let timer = 0;
+// let clear_time = '';
+let timerId = null;
+function ten_timer() {
+    // if(clear_time == '0'){
+    //     timer = 0;
+    //     return ;
+    // }
+    timerId = setTimeout(ten_timer,3000);
+    timer += 10000;
+    // console.log(timer);
+    io.emit('ten_timer', timer);
+}
 
 //socket.io
 io.on('connection', function(socket){
@@ -186,11 +199,6 @@ io.on('connection', function(socket){
     //     }
     // });
 
-    // socket.on('stop_elapse_time', ()=>{
-    //     clearInterval(elapse);
-    //     io.emit('stop_elapse_time');
-    // });
-
     socket.on('change_user_name', (data)=>{
         let before_user_name;
         for(let key in user_list){
@@ -220,21 +228,26 @@ io.on('connection', function(socket){
         io.emit('writing',{socket_id: socket.id, data: data});
     })
 
-    let timer = 0;
-    function ten_timer() {
-        timer += 10000;
-        console.log(timer);
-        io.emit('ten_timer', timer);
-    }
+    socket.on('stop_elapse_time', ()=>{
+        clearTimeout(ten_timer);
+        io.emit('stop_elapse_time');
+    });
+
+
     let whisper_to;
     socket.on('send', (data)=>{
-        clearInterval(ten_timer);
-        io.emit('stop_elapse_time');
+        console.log(timerId);
+        if(timerId != null){
+            // clear_time = '0';
+            clearTimeout(timerId);
+            timer = 0;
+            timerId = null;
+            // console.log(clear_time, 'hi');
+        }
         let get_today_dic = get_today();
         // console.log(kor_time_now.getHours(), kor_time_now.getMinutes())
         // let last_msg_time = new Date(stamp_year, stamp_month-1, stamp_date, stamp_hour, stamp_minute, stamp_second);
         let stamp_time;
-        console.log(stamp_time);
         if(get_today_dic.stamp_minute < 10){
             get_today_dic.stamp_minute = `0${get_today_dic.stamp_minute}`;
         }
@@ -259,10 +272,11 @@ io.on('connection', function(socket){
             socket_id: socket.id,
             user_info: data,
             whisper: whisper_to,
-            stamp_time: stamp_time
+            stamp_time: stamp_time,
+            get_today_dic: get_today_dic
         };
-        let ten_timer_start = setInterval(ten_timer,10000);
-        io.emit('new_msg', {socket_id: socket.id, user_info: data, whisper: whisper_to, server_data: server_data, get_today_dic: get_today_dic});
+        timerId = setTimeout(ten_timer,3000);
+        io.emit('new_msg', {server_data: server_data});
         whisper_to = undefined;
     });
 

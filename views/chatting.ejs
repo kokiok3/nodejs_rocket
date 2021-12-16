@@ -717,8 +717,8 @@
         socket.on('new_msg', (data)=>{
             $('.msg_time').text(data.server_data.stamp_time);
             // 오늘날짜 생성
-            if($(`.${data.get_today_dic.today_for_class}`)[0] == undefined){
-                $('.chatting_1 .chat_history').append(`<p class='sys_date ${data.get_today_dic.today_for_class}'>${data.get_today_dic.today}</p>`);
+            if($(`.${data.server_data.get_today_dic.today_for_class}`)[0] == undefined){
+                $('.chatting_1 .chat_history').append(`<p class='sys_date ${data.server_data.get_today_dic.today_for_class}'>${data.server_data.get_today_dic.today}</p>`);
             }
             const msg_wrapper = document.createElement('div');
             const msg_profile_pic = document.createElement('div');
@@ -728,31 +728,31 @@
             const msg_time = document.createElement('div');
             const msg_txt = document.createElement('div');
             //귓속말일때
-            if(data.whisper != undefined){
-                if(data.whisper == userName){
+            if(data.server_data.whisper != undefined){
+                if(data.server_data.whisper == userName){
                     msg_wrapper.classList.add('whisper_msg');
-                    msg_wrapper.classList.add(data.user_info.user_name);
+                    msg_wrapper.classList.add(data.server_data.user_info.user_name);
                     msg_profile_pic.classList.add('msg_profile_pic');
                     //상대방 프로필 사진
-                    if(data.user_info.profile_pic == data.socket_id){ //유저 랜덤 프로필 사진
-                        msg_profile_pic.style.backgroundColor = data.user_info.random_profile_color;
+                    if(data.server_data.user_info.profile_pic == data.server_data.socket_id){ //유저 랜덤 프로필 사진
+                        msg_profile_pic.style.backgroundColor = data.server_data.user_info.random_profile_color;
                         const msg_profile_pic_random_img = document.createElement('img');
-                        msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.user_info.random_profile_number}).png`);
+                        msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.server_data.user_info.random_profile_number}).png`);
                         msg_profile_pic.append(msg_profile_pic_random_img);
                     }else{
-                        msg_profile_pic.style.backgroundImage = `url(../${data.user_info.profile_pic})`;
+                        msg_profile_pic.style.backgroundImage = `url(../${data.server_data.user_info.profile_pic})`;
                     }
                     msg_content.classList.add('msg_content');
                     msg_nameNtime.classList.add('msg_nameNtime');
                     msg_txt.classList.add('msg_txt');
-                    msg_name.innerText = data.user_info.user_name;
+                    msg_name.innerText = data.server_data.user_info.user_name;
                     msg_time.innerText = data.server_data.stamp_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    if(data.user_info.url_exist == 'url_exist'){
-                        msg_txt.innerHTML = linkify(data.user_info.msg);
+                    if(data.server_data.user_info.url_exist == 'url_exist'){
+                        msg_txt.innerHTML = linkify(data.server_data.user_info.msg);
                     }else {
-                        msg_txt.innerText = data.user_info.msg;
+                        msg_txt.innerText = data.server_data.user_info.msg;
                     }
                     msg_txt.innerHTML = msg_txt_text;
                     msg_nameNtime.append(msg_name, msg_time);
@@ -763,30 +763,30 @@
                 }
             }else{
                 //귓속말 아닐때
-                if(data.socket_id != socketId){
+                if(data.server_data.socket_id != socketId){
                     msg_wrapper.classList.add('new_msg');
-                    msg_wrapper.classList.add(data.user_info.user_name);
+                    msg_wrapper.classList.add(data.server_data.user_info.user_name);
                     msg_profile_pic.classList.add('msg_profile_pic');
                     //상대방 프로필 사진
-                    if(data.user_info.profile_pic == data.socket_id){ //유저 랜덤 프로필 사진
-                        msg_profile_pic.style.backgroundColor = data.user_info.random_profile_color;
+                    if(data.server_data.user_info.profile_pic == data.server_data.socket_id){ //유저 랜덤 프로필 사진
+                        msg_profile_pic.style.backgroundColor = data.server_data.user_info.random_profile_color;
                         const msg_profile_pic_random_img = document.createElement('img');
-                        msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.user_info.random_profile_number}).png`);
+                        msg_profile_pic_random_img.setAttribute('src', `../static/image/image (${data.server_data.user_info.random_profile_number}).png`);
                         msg_profile_pic.append(msg_profile_pic_random_img);
                     }else{
-                        msg_profile_pic.style.backgroundImage = `url(../${data.user_info.profile_pic})`;
+                        msg_profile_pic.style.backgroundImage = `url(../${data.server_data.user_info.profile_pic})`;
                     }
                     msg_content.classList.add('msg_content');
                     msg_nameNtime.classList.add('msg_nameNtime');
                     msg_txt.classList.add('msg_txt');
-                    msg_name.innerText = data.user_info.user_name;
+                    msg_name.innerText = data.server_data.user_info.user_name;
                     msg_time.innerText = data.server_data.stamp_time;
                     msg_name.classList.add('msg_name');
                     msg_time.classList.add('msg_time');
-                    if(data.user_info.url_exist == 'url_exist'){
-                        msg_txt.innerHTML = linkify(data.user_info.msg);
+                    if(data.server_data.user_info.url_exist == 'url_exist'){
+                        msg_txt.innerHTML = linkify(data.server_data.user_info.msg);
                     }else {
-                        msg_txt.innerText = data.user_info.msg;
+                        msg_txt.innerText = data.server_data.user_info.msg;
                     }
                     msg_nameNtime.append(msg_name, msg_time);
                     msg_content.append(msg_nameNtime, msg_txt);
@@ -868,10 +868,10 @@
                     $('#whisper').append(`<option class='whisper_op' value="${data.user_list[key].id}"> ${data.user_list[key].id} </option>`);
                 }
 
-                //참여자 인원이 1명일때 elapse 기능 해제
+                //참여자 인원이 0명일때 elapse 기능 해제
                 let participants_number = data.user_list.length;
                 if(participants_number == 1){
-                    socket.emit('elapse_time', 'stop_elapse_time');
+                    socket.emit('stop_elapse_time');
                 }
             }
         });
