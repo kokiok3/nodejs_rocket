@@ -464,36 +464,40 @@
                 msg_content.append(msg_nameNtime, msg_txt);
                 msg_wrapper.append(msg_profile_pic, msg_content);
                 $(`.chatting_1 .chat_history`).append(msg_wrapper);
-                //
-                // $(`.chatting_1 .chat_history`).html(`
-                //     <div class="msg_wrapper my_msg ${userName}">
-                //         <div class="msg_profile_pic"></div>
-                //         <div class="msg_content">
-                //             <div class="msg_nameNtime">
-                //                 <div class="msg_time">${what_time}</div>
-                //                 <div class="msg_name">${userName}</div>
-                //             </div>
-                //             <div class="msg_txt"></div>
-                //         </div>
-                //     </div>
-                // `);
+
+                // const msg_txt_text = linkify($(`.chat_input_1`).val());
+                // console.log(msg_txt_text);
+                // // //whisper 유무에 따른 css적용을 위한 class 추가
+                // let whisper_class = "";
                 // if(select_whisper_id != undefined){
-                //     $('.msg_wrapper').addClass('my_whisper');
+                //     whisper_class = "my_whisper";
                 //     select_whisper_id = undefined;
                 // }
+                // // //프로필 사진
                 // if(profilePic == socketId){
-                //     $('.msg_profile_pic').css({'background-color': `${random_profile_color}`});
-                //     $('.msg_profile_pic').html(`
-                //         <img src="../static/image/image (${random_profile_number}).png" alt="">
-                //     `);
+                //     let msg_profile_pic_color = `background-color: ${random_profile_color}`;
+                //     let img = '<img src="../static/image/image (${random_profile_number}).png" alt="">';
                 // }else{
-                //     $('.msg_profile_pic').css({'background-image': `url(../${profilePic})`});
+                //     let msg_profile_pic_pic = `background-image: url(../${profilePic})`;
                 // }
+                // // 하이퍼링크
                 // if(url_exist == 'url_exist' ){
                 //     $('.msg_txt').html = msg_txt_text;
                 // }else {
                 //     $('.msg_txt').text = msg_txt_text;
                 // }
+                // $(`.chatting_1 .chat_history`).append(
+                //     `<div class="msg_wrapper my_msg ${userName}"` + whisper_class + `>
+                //         <div class="msg_profile_pic" + msg_profile_pic_color + msg_profile_pic_pic> + img + </div>
+                //         <div class="msg_content">
+                //             <div class="msg_nameNtime">
+                //                 <div class="msg_time"></div>
+                //                 <div class="msg_name">${userName}</div>
+                //             </div>
+                //             <div class="msg_txt">${msg_txt_text}</div>
+                //         </div>
+                //     </div>
+                // `);
                 //
                 socket.emit('send', {
                     user_name: userName,
@@ -641,7 +645,7 @@
                             <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
                         </div>`
                     );
-                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                    if (data.user_list[key].profile_pic == data.user_list[key].id) {
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
                     }else {
@@ -654,7 +658,7 @@
                             <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
                         </div>`
                     );
-                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                    if (data.user_list[key].profile_pic == data.user_list[key].id) {
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
                     }else {
@@ -667,16 +671,6 @@
                 $('.participants_number').text(data.user_list.length + '명');
             }
         });
-
-        // socket.on('elapse_time_dnone', ()=>{
-        //     console.log('elapse_time_dnone');
-        //     if($('.elapse_time').hasClass('elapse_opacity')){
-        //         return;
-        //     }else{
-        //         $('.elapse_time').text(``);
-        //         $('.elapse_time').addClass('elapse_opacity');
-        //     }
-        // });
 
         socket.on('ten_timer', (data)=>{
             let data_elapse_time = data;
@@ -843,7 +837,7 @@
                             <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
                         </div>`
                     );
-                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                    if (data.user_list[key].profile_pic == data.user_list[key].id) {
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
                     }else {
@@ -856,7 +850,7 @@
                             <div class='participants_user_name'> ${data.user_list[key].user_name} </div>
                         </div>`
                     );
-                    if (data.user_list[key].profile_pic == data.user_list[key].user_name) {
+                    if (data.user_list[key].profile_pic == data.user_list[key].id) {
                         $(`.participants_name.${data.user_list[key].id} .participants_user_pic`).css({'background-color': `${data.user_list[key].random_rgb}`});
                         $(`.participants_name.${data.user_list[key].user_name} .participants_user_pic`).append(`<img src="../static/image/image (${data.user_list[key].random_profile_num}).png">`);
                     }else {
