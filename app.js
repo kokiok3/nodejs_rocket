@@ -123,7 +123,7 @@ function get_today() {
 let timer = 0;
 let timer_id = null;
 function ten_timer() {
-    timer_id = setTimeout(ten_timer,3000);
+    timer_id = setTimeout(ten_timer,10000);
     timer += 10000;
     // console.log(timer);
     io.emit('ten_timer', timer);
@@ -212,7 +212,7 @@ io.on('connection', function(socket){
             stamp_time: stamp_time,
             get_today_dic: get_today_dic
         };
-        timer_id = setTimeout(ten_timer,3000); //ten_timer()는 io.on('connect', ..) 바깥에 정의
+        timer_id = setTimeout(ten_timer,10000); //ten_timer()는 io.on('connect', ..) 바깥에 정의
         io.emit('new_msg', {server_data: server_data});
         whisper_to = undefined;
     });
