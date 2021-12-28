@@ -237,14 +237,13 @@
             $('.memo_input').removeClass('ce-element ce-element--type-text');
         })
         function add_memo(){
-            stamp_today();
             memo_num += 1;
             $('.memo_list_body').append(`
-                <div class="memo${memo_num} memo_wrap" id="con" onclick="memo_on(${memo_num})">
+                <div class="memo${memo_num} memo_wrap" onclick="memo_on(${memo_num})">
                     <button class="memo">
                         <span class="memo_btn">
                             <span class="memo_title">제목 없음</span>
-                            <span  class="memo_time">${today}</span>
+                            <span  class="memo_time"></span>
                         </span>
                     </button>
                     <i class="fas fa-times del_memo" onclick="del_memo(${memo_num})"></i>
@@ -255,10 +254,8 @@
                     <h1></h1>
                 </div>`
             )
-            // $('.memo_each').append(
-            //     `<textarea name="memo_input${memo_num}" class="memo_input${memo_num} d-none " placeholder="메모를 작성할 수 있습니다." autofocus=""></textarea>`
-            // )
             $('.write_memo').addClass('d-none');
+            socket.emit('memo');
         }
         let del;
         function del_memo(number){
@@ -350,17 +347,11 @@
             }
         }
         function writing_one(){
-            socket.emit('writing', {
-                one: '1',
-                user_name: userName
-            });
+            socket.emit('writing', {one: '1', user_name: userName});
         }
         function writing_zero(){
             count_e = 0;
-            socket.emit('writing', {
-                zero: '0',
-                user_name: userName
-            });
+            socket.emit('writing', {zero: '0',user_name: userName});
         }
 
         //웹페이지 종료시 '입력중인 메세지창' 닫기
@@ -370,16 +361,19 @@
             writing_zero();
         }
 
+        $('#chat_bar > div.chatting_1 > div.chat_footer > div > button.send_btn.active_btn').click(()=>{
+            writing_zero();
+        })
+
         //채팅입력시 '보내기 버튼' css활성화
         $('.chat_input_1').on('keyup', active_send_btn);
-        $('.chat_input_2').on('keyup', active_send_btn);
         let input_value;
         function active_send_btn(e){
-            let chat_input_1 = e.target.className.charAt(11);
+            let chat_input_1 = e.target;
             if(e.target.value == ''){
-                $(`.chatting_1 chat_input_1 .send_btn`).removeClass('active_btn');
+                $(`#chat_bar > div.chatting_1 > div.chat_footer > div > button.send_btn`).removeClass('active_btn');
             }else{
-                $(`.chatting_1 chat_input_1 .send_btn`).addClass('active_btn');
+                $(`#chat_bar > div.chatting_1 > div.chat_footer > div > button.send_btn`).addClass('active_btn');
             }
         }
 
@@ -709,7 +703,9 @@
         });
 
         socket.on('new_msg', (data)=>{
-            $('.msg_time').text(data.server_data.stamp_time);
+            //.my_msg .msg_time에 작성 시간 넣기
+            $('.chat_history .my_msg')[$('.chat_history .my_msg').length-1].children[1].children[0].children[0].innerText = data.server_data.stamp_time;
+
             // 오늘날짜 생성
             if($(`.${data.server_data.get_today_dic.today_for_class}`)[0] == undefined){
                 $('.chatting_1 .chat_history').append(`<p class='sys_date ${data.server_data.get_today_dic.today_for_class}'>${data.server_data.get_today_dic.today}</p>`);
@@ -815,17 +811,21 @@
 
         });
 
+        socket.on('memo', (data)=>{
+            $('span.memo_time').text(data.today);
+        })
+
         socket.on('exit', (data)=>{
             // 오늘날짜 생성
-            // if($(`.${today_for_class}`)[0] == undefined){
-            //     stamp_today();
-            //     $('.chatting_1 .chat_history').append(`<p class='sys_date ${today_for_class}'>${today}</p>`);
-            // }
+            if($(`.${data.get_today_dic.today_for_class}`)[0] == undefined){
+                $('.chatting_1 .chat_history').append(`<p class='sys_date ${data.get_today_dic.today_for_class}'>${data.get_today_dic.today}</p>`);
+            }
 
+            //입장 메세지
             $('.chatting_1 .chat_history').append(`<p class='sys'> <span class='${data.exit_user}'>${data.exit_user}</span> 님이 퇴장하셨습니다 </p>`);
             $('.chatting_1 .chat_back').scrollTop($('.chatting_1 .chat_history').height());
 
-            //퇴장시 참여자 목록과 인원 && 귓속말
+            //참여자 목록과 인원 && 귓속말 목록
             $('.participants').empty();
             $('.whisper_op').remove();
             for(let key in data.user_list){
