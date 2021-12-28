@@ -9,7 +9,7 @@
 <p> 👉HTML, CSS, JavaScript, Node.js, EJS, EC2, PuTTY, WEBSTORM, GITHUB DESKTOP </p>
 <br>
 <h3> 웹사이트 구경 </h3>
-<a href= "http://15.164.213.156:8010/main/" target= "_blank">Rocket Messenger </a>
+<a href= "http://15.164.213.156:8020/chatting" target= "_blank">Rocket Messenger </a>
 <br>
 <h3> 기능 </h3>
 <ul>
@@ -58,8 +58,7 @@ I used <br>
 👉HTML, CSS, JavaScript, Node.js, EJS, EC2, PuTTY, WEBSTORM, GITHUB DESKTOP <br>
 
 <h3> Here's the website </h3>
- <a href= "http://54.180.89.147:8020/chatting" target= "_blank"> 
-  Rocket Messenger </a>
+ <a href= "http://15.164.213.156:8020/chatting" target= "_blank">Rocket Messenger</a>
 
 <h3> Rocket Messenger offers these </h3>
  -Chat other people! <br>
@@ -69,4 +68,4 @@ I used <br>
  -Write memos on the right side <br>
  
  <h4> If you enjoy my website, you can contact here </h4>
-📧kkokkiok@gmail.com
+📧kkokkiok3@gmail.com
