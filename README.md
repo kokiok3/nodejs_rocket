@@ -1,7 +1,7 @@
 <h2> 2021.10-12 Rocket Messenger </h2>
-![Untitled](https://user-images.githubusercontent.com/84312457/147599823-5af116ab-5d0d-4f52-9524-5869905baf25.png)
 
-<br>
+![로켓메신저 메인](https://user-images.githubusercontent.com/84312457/147599989-24d8e3b3-b727-4e36-a043-c66c4de234ae.png)
+
 <h3> 소개 </h3>
 <p> 실시간으로 다른 사람들과 채팅할 수 있습니다. </p>
 <br>
@@ -55,7 +55,7 @@
 
 <h2> This is Rocket Messenger. </h2>
 I used <br>
-👉HTML, CSS, JAVASCRIPT, NODEJS, EJS, EC2, PuTTY, WEBSTORM, GITHUB DESKTOP <br>
+👉HTML, CSS, JavaScript, Node.js, EJS, EC2, PuTTY, WEBSTORM, GITHUB DESKTOP <br>
 
 <h3> Here's the website </h3>
  <a href= "http://54.180.89.147:8020/chatting" target= "_blank"> 
