@@ -221,10 +221,17 @@ io.on('connection', function(socket){
         whisper_to = whisper;// new_msg를 통해 전달되는 변수
     })
 
+    socket.on('memo', ()=>{
+        let get_today_dic = get_today();
+        socket.emit('memo', get_today_dic);
+    })
+
     socket.on('disconnect', function(){
         let exit_user = user_list.filter(i => i.id == socket.id);
         exit_user = exit_user[0].id;
         user_list = user_list.filter(i => i.id !== exit_user);
-        io.emit('exit', {socket_id: socket.id, user_list: user_list, exit_user: exit_user});
+        //오늘 날짜 생성
+        let get_today_dic = get_today();
+        io.emit('exit', {socket_id: socket.id, user_list: user_list, exit_user: exit_user, get_today_dic: get_today_dic});
     });
 });
