@@ -1,7 +1,6 @@
 <h2> 2021.10-12 Rocket Messenger </h2>
+![Untitled](https://user-images.githubusercontent.com/84312457/147599823-5af116ab-5d0d-4f52-9524-5869905baf25.png)
 
-![Untitled](https://user-images.githubusercontent.com/84312457/147599591-29aef27c-6eff-477e-8374-37790fab7c2a.png)
-![Untitled (1)](https://user-images.githubusercontent.com/84312457/147599608-cfaa3fe9-edc2-4b16-9791-d0a5dd792fff.png)
 <br>
 <h3> 소개 </h3>
 <p> 실시간으로 다른 사람들과 채팅할 수 있습니다. </p>
