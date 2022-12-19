@@ -8,9 +8,6 @@
 <h3> 사용한 기술 </h3>
 <p> 👉HTML, CSS, JavaScript, Node.js, EJS, EC2, PuTTY, WEBSTORM, GITHUB DESKTOP </p>
 <br>
-<h3> 웹사이트 구경 </h3>
-<a href= "http://15.164.213.156:8020/chatting" target= "_blank">Rocket Messenger </a>
-<br>
 <h3> 기능 </h3>
 <ul>
     <li>다른사람과의 채팅
@@ -56,9 +53,6 @@
 <h2> This is Rocket Messenger. </h2>
 I used <br>
 👉HTML, CSS, JavaScript, Node.js, EJS, EC2, PuTTY, WEBSTORM, GITHUB DESKTOP <br>
-
-<h3> Here's the website </h3>
- <a href= "http://15.164.213.156:8020/chatting" target= "_blank">Rocket Messenger</a>
 
 <h3> Rocket Messenger offers these </h3>
  -Chat other people! <br>
